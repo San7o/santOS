@@ -5,7 +5,7 @@ This is a long term project, I'll record my progress on my [youtube channel](htt
 
 ## Roadmap
 
--[ ] Create a Bootloader
+- [ ] Create a Bootloader
   - Write a simple bootloader in Assembly.
   Load and execute the kernel
 
