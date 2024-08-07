@@ -5,13 +5,13 @@ strlen:
     push  ebx           ; save the base pointer
     mov   ebx, eax
 
-loop_start:
+.loop_start:
     cmp   byte [eax], 0 ; check for null terminator
-    jz    loop_end      ; if null terminator, jump to loop_end
+    jz    .loop_end     ; if null terminator, jump to loop_end
     inc   eax           ; increment the pointer
-    jmp   loop_start    ; jump to loop_start
+    jmp   .loop_start   ; jump to loop_start
 
-loop_end:
+.loop_end:
     sub   eax, ebx      ; calculate the length of the string
                         ; eax = eax - ebx
     pop   ebx           ; pop the value from the stack to ebx

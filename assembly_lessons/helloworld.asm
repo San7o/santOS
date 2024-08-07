@@ -25,21 +25,23 @@ global _start         ; subroutine, must be declared for linker (ld)
 ; NASM compiled program are always the name of the
 ; program and the number of passed arguments.
 _start:
+
+subroutine_main:
     pop   ecx          ; pop the number of arguments
     pop   eax          ; pop the name of the program
 
     cmp   ecx, 1       ; check args
-    jz    show_usage
+    jz    .show_usage
 
-next_arg:              ; print the arguments
+.next_arg:              ; print the arguments
     cmp   ecx, 1
-    jz    ask_input
+    jz    .ask_input
     pop   eax
     call  println
     dec   ecx
-    jmp   next_arg
+    jmp   .next_arg
 
-ask_input:              ; read the user input
+.ask_input:              ; read the user input
     mov   eax, user_message
     call  print
 
@@ -51,10 +53,10 @@ ask_input:              ; read the user input
     mov   eax, user_input
     call  println
 
-done:
+.done:
     call  exit
 
-show_usage:
+.show_usage:
     mov   eax, usage_msg
     call  println
     call exit
