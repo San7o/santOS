@@ -5,14 +5,12 @@ This is a long term project, I'll record my progress on my [youtube channel](htt
 
 ## Roadmap
 
-- [ ] Boot the kernel with GRUB
+- [ ] Boot the kernel, [link](https://wiki.osdev.org/Bare_Bones)
 
-- [ ] Set Up a Basic Kernel
-  - Write initial kernel code in C
-  - Print basic output (e.g., to the screen)
+- [ ] kernel skeleton, [link](https://wiki.osdev.org/Meaty_Skeleton)
 
 - [ ] Memory Management
-  - Implement paging and virtual memory
+  - Implement [paging](https://wiki.osdev.org/Paging) 
   - Develop a basic memory allocator (e.g., buddy system)
 
 - [ ] Interrupt Handling
@@ -41,7 +39,7 @@ This is a long term project, I'll record my progress on my [youtube channel](htt
 ## Cross compiler
 
 To compile the kernel, you will need to build cross compiler. This is because
-your compiler (gcc) was build for linux, and we are not using linux to run
+your compiler (gcc) was built for linux, and we are not using linux to run
 the program. This means you will have to compile your own binutils and gcc
 version targeting `i686-elf`. Follow [this](https://wiki.osdev.org/GCC_Cross-Compiler)
 guide carefully in order to achieve this.
