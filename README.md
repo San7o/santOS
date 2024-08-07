@@ -36,3 +36,12 @@ This is a long term project, I'll record my progress on my [youtube channel](htt
   - Develop a command-line interface (CLI) or shell for user interaction
 
 - [ ] GUI ???
+
+
+## Cross compiler
+
+To compile the kernel, you will need to build cross compiler. This is because
+your compiler (gcc) was build for linux, and we are not using linux to run
+the program. This means you will have to compile your own binutils and gcc
+version targeting `i686-elf`. Follow [this](https://wiki.osdev.org/GCC_Cross-Compiler)
+guide carefully in order to achieve this.
