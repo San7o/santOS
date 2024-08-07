@@ -5,9 +5,7 @@ This is a long term project, I'll record my progress on my [youtube channel](htt
 
 ## Roadmap
 
-- [ ] Create a Bootloader
-  - Write a simple bootloader in Assembly.
-  Load and execute the kernel
+- [ ] Boot the kernel with GRUB
 
 - [ ] Set Up a Basic Kernel
   - Write initial kernel code in C
