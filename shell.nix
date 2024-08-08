@@ -1,5 +1,3 @@
-# Use this shell to compile binutils and gcc
-
 let
   nixpkgs = fetchTarball "https://github.com/NixOS/nixpkgs/tarball/nixos-24.05";
   pkgs = import nixpkgs { config = {}; overlays = []; };
@@ -10,14 +8,8 @@ pkgs.mkShell {
   hardeningDisable = [ "all" ]; # Disable all hardening flags
 
   packages = with pkgs; [
-      libgcc
-      bison
       gnumake
-      flex
-      gmp
-      mpfr
-      libmpc
-      texinfo
-      isl
+      grub2
+      libisoburn        # xorriso
   ];
 }

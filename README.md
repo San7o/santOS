@@ -6,6 +6,7 @@ This is a long term project, I'll record my progress on my [youtube channel](htt
 ## Roadmap
 
 - [ ] Boot the kernel, [link](https://wiki.osdev.org/Bare_Bones)
+  - use pixed buffers instead of VGA
 
 - [ ] kernel skeleton, [link](https://wiki.osdev.org/Meaty_Skeleton)
 
