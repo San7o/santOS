@@ -1,1 +1,4 @@
 build/
+*.d
+*.kernel
+*.o
