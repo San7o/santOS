@@ -5,7 +5,7 @@ This is a long term project, I'll record my progress on my [youtube channel](htt
 
 ## Roadmap
 
-- [ ] Boot the kernel, [link](https://wiki.osdev.org/Bare_Bones)
+- [x] Boot the kernel, [link](https://wiki.osdev.org/Bare_Bones)
   - use pixed buffers instead of VGA
 
 - [ ] kernel skeleton, [link](https://wiki.osdev.org/Meaty_Skeleton)
@@ -44,3 +44,17 @@ your compiler (gcc) was built for linux, and we are not using linux to run
 the program. This means you will have to compile your own binutils and gcc
 version targeting `i686-elf`. Follow [this](https://wiki.osdev.org/GCC_Cross-Compiler)
 guide carefully in order to achieve this.
+
+# Compile the project
+
+You can compile and run everytinh just by running:
+```bash
+make
+```
+
+Or you can compile different parts with the following commands:
+```bash
+make kernel   # kernel
+make boot     # create boot image with grub
+make qemu     # run qemu
+```
