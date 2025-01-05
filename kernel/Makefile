@@ -11,6 +11,7 @@
 # - install-kernel: installs the kernel in $DESTDIR
 # - install-headers: copies the headers inside $DESTDIR/$INCLUDEDIR
 # - install: combines the previous two
+# - clean: cleans the build files
 #
 # Note that you should run the `root/config.sh` script before building
 # anything, or you could directly use `root/build.sh` wich
@@ -77,7 +78,7 @@ $(ARCHDIR)/crtn.o \
 
 
 #====================================================================#
-# COMMANDS                                                           #
+# BUILDING                                                           #
 #====================================================================#
 
 .PHONY: all clean install install-headers install-kernel
@@ -97,6 +98,11 @@ $(ARCHDIR)/crtbegin.o $(ARCHDIR)/crtend.o:
 
 .S.o:
 	$(CC) -MD -c $< -o $@ $(CFLAGS) $(CPPFLAGS)
+
+
+#====================================================================#
+# ADDITIONAL COMMANDS                                                #
+#====================================================================#
 
 clean:
 	rm -f myos.kernel

@@ -1,26 +1,57 @@
-DEFAULT_HOST=i686-elf
-HOST?=$(DEFAULT_HOST)
-HOSTARCH=i386
+#====================================================================#
+#                                                                    #
+#                          LIBC MAKEFILE                             #
+#                                                                    #
+#====================================================================#
+#
+# This Makefile is responsible for building the libc implementation.
+# This library, compiled separately from the kernel and statically
+# liked to it, will provide useful utilities from the glib such as
+# string and IO operations.
+# Additionally, the following commands are provided:
+# - install-libs: installs the library in $DESTDIR/$LIBDIR
+# - install-headers: copies the headers inside $DESTDIR/$INCLUDEDIR
+# - install: combines the previous two
+# - clean: cleans the build files
+#
+# Note that you should run the `root/config.sh` script before building
+# anything, or you could directly use `root/build.sh` wich
+# automatically sets the necessary environmnet.
 
-CFLAGS?=-O2 -g
-LDFLAGS?=
-LIBS?=
 
+#====================================================================#
+# VARIABLES                                                          #
+#====================================================================#
+
+# Target Architecture
+HOSTARCH?=i386
+
+# Input Directories
+ARCHDIR=arch/$(HOSTARCH)
+
+# Output directories
 DESTDIR?=
 PREFIX?=/usr/local
 EXEC_PREFIX=$(PREFIX)/include
-LIBDIR?=$(EXEC_PREFIX)/lib
+LIBDIR?=$(EXEC_PREFIX)/lib        # The library will be installed here
+CFLAGS:=$(CFLAGS) $(ARCH_CFLAGS)
+LIBK_CFLAGS:=$(LIBK_CFLAGS) $(KERNEL_ARCH_CFLAGS)
 
+# Subprojects
+include $(ARCHDIR)/make.config
+
+# Compiler Flags
+CFLAGS?=-O2 -g
+LDFLAGS?=
+LIBS?=
 CFLAGS:=$(CFLAGS) -ffreestanding -Wall -Wextra -Wpedantic \
         -Werror -Wconversion
 LIBK_CFLAGS:=$(CFLAGS)
 
-ARCHDIR=arch/$(HOSTARCH)
 
-include $(ARCHDIR)/make.config
-
-CFLAGS:=$(CFLAGS) $(ARCH_CFLAGS)
-LIBK_CFLAGS:=$(LIBK_CFLAGS) $(KERNEL_ARCH_CFLAGS)
+#====================================================================#
+# OBJECT FILES                                                       #
+#====================================================================#
 
 FREEOBJS=\
 $(ARCH_FREEOBJS) \
@@ -36,6 +67,11 @@ $(HOSTEDOBJS) \
 LIBK_OBJS=$(FREEOBJS:.o=.libk.o)
 #BINARIES=libc.a libk.a        # libc not available yet
 BINARIES=libk.a
+
+
+#====================================================================#
+# BUILDING                                                           #
+#====================================================================#
 
 .PHONY: all clean install install-headers install-libs
 .SUFFIXES: .o .libk.o .c. S
@@ -59,6 +95,11 @@ libk.a: $(LIBK_OBJS)
 
 .S.libk.o:
 	$(CC) -MD -c $< -o $@ $(LIBK_CFLAGS)
+
+
+#====================================================================#
+# ADDITIONAL COMMANDS                                                #
+#====================================================================#
 
 clean:
 	rm -f $(BINARIES) *.a
