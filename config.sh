@@ -10,6 +10,7 @@ export GRUB_DIR=~/opt/bin
 
 export MAKE=${MAKE:-make}
 export HOST=i686-elf
+export HOSTARCH=i386
 
 export AR=${AR_DIR}/${HOST}-ar
 export AS=${AS_DIR}/${HOST}-as

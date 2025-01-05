@@ -1,14 +1,13 @@
 #!/bin/sh
 
-# This is an helper tool to build the kernel
-# in different ways and to provide additional
-# functionalities.
+# This is an helper tool to build the kernel in different ways and
+# to provide additional functionalities.
+
+ISO_OUTPUT_NAME=myos.iso
 
 function build
 {
-  # Load the config environment
-  set -e 
-  . ./config.sh
+  banner "Building..."
 
   mkdir -p "$SYSROOT"
 
@@ -23,33 +22,67 @@ function build
   return
 }
 
+function clean
+{
+  banner "Cleaning..."
+
+  for PROJECT in $PROJECTS; do
+    echo "Cleaning $PROJECT..."
+    echo "Make is $MAKE"
+    (cd $PROJECT && $MAKE clean)
+  done
+
+  rm -rf $SYSROOT 2>/dev/null || :
+  rm $ISO_OUTPUT_NAME 2>/dev/null || :
+  return
+}
+
 function iso
 {
+  banner "Creating the iso..."
+
   mkdir $SYSROOT/boot/grub || :
   cp grub.cfg $SYSROOT/boot/grub/
-  $GRUB_DIR/grub-mkrescue -o myos.iso sysroot
+  $GRUB_DIR/grub-mkrescue -o $ISO_OUTPUT_NAME sysroot
   return
 }
 
 function qemu
 {
+  banner "Launching qemu..."
   $QEMU_DIR/qemu-system-i386 -cdrom myos.iso
   return
 }
 
+function banner
+{
+  echo "=========================================="
+  echo "$1"
+  echo "=========================================="
+}
+
 function help
 {
-  echo "Usage: $0 [build|iso|qemu|help]"
+  echo "Usage: $0 [build|clean|iso|qemu|help]"
   return
 }
 
-if [ $? -eq 1 ]; then
+if [ $# -eq 0 ]; then
   help
   exit
 fi
 
+# Load the config environment
+set -e 
+. ./config.sh
+
+# Parse args
 if [ "$1" == "build" ]; then
   build
+  exit
+fi
+if [ "$1" == "clean" ]; then
+  clean
   exit
 fi
 if [ "$1" == "iso" ]; then

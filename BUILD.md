@@ -13,6 +13,6 @@ To build the OS you can use the handy [build.sh](./build.sh) bash
 script wich provides useful functionalities.
 ```bash
 bash> ./build.sh help
-Usage: ./build.sh [build|iso|qemu|help]
+Usage: ./build.sh [build|clean|iso|qemu|help]
 ```
 

@@ -1,28 +1,59 @@
-DEFAULT_HOST=i686-elf
-HOST?=$(DEFAULT_HOST)
-HOSTARCH=i386
+#====================================================================#
+#                                                                    #
+#                        KERNEL MAKEFILE                             #
+#                                                                    #
+#====================================================================#
+#
+# This Makefile is responsible for building the main kernel
+# executable, all the files in the `root/kernel` directory will be
+# compiled here.
+# Additionally, the following commands are provided:
+# - install-kernel: installs the kernel in $DESTDIR
+# - install-headers: copies the headers inside $DESTDIR/$INCLUDEDIR
+# - install: combines the previous two
+#
+# Note that you should run the `root/config.sh` script before building
+# anything, or you could directly use `root/build.sh` wich
+# automatically sets the necessary environmnet.
 
-CFLAGS?=-O2 -g
-LDFLAGS?=
-LIBS?=
 
+#====================================================================#
+# VARIABLES                                                          #
+#====================================================================#
+
+# Target
+HOSTARCH?=i386
+
+# Input directories
+ARCHDIR=arch/$(HOSTARCH)
+
+# Output Directories
 DESTDIR?=
 PREFIX?=build/
 EXEC_PREFIX?=$(PREFIX)
-BOOTDIR?=$(EXEC_PREFIX)/boot
-INCLUDEDIR?=$(PREFIX)/include
+BOOTDIR?=$(EXEC_PREFIX)/boot    # The kernel will be installed here
+INCLUDEDIR?=$(PREFIX)/include   # Headers will be installed here
 
-CFLAGS:=$(CFLAGS) -ffreestanding -Wall -Wextra
+# Subprojects
+include $(ARCHDIR)/make.config
+
+# Compiler Flags
+CFLAGS?=-O2 -g
+LDFLAGS?=
+LIBS?=
+CFLAGS:=$(CFLAGS) -ffreestanding -Wall -Wextra -Werror \
+        -Wpedantic
 LDFLAGS:=$(LDFLAGS)
 LIBS:=$(LIBS) -nostdlib -L$(PREFIX)/lib -lk -lgcc
-
-ARCHDIR=arch/$(HOSTARCH)
-
-include $(ARCHDIR)/make.config
 
 CFLAGS:=$(CFLAGS) $(KERNEL_ARCH_CFLAGS)
 LDFLAGS:=$(LDFLAGS) $(KERNEL_ARCH_LDFLAGS)
 LIBS:=$(LIBS) $(KERNEL_ARCH_LIBS)
+
+
+#====================================================================#
+# OBJECT FILES                                                       #
+#====================================================================#
 
 KERNEL_OBJS=\
 $(KERNEL_ARCH_OBJS) \
@@ -43,6 +74,11 @@ $(KERNEL_OBJS) \
 $(LIBS) \
 $(ARCHDIR)/crtend.o \
 $(ARCHDIR)/crtn.o \
+
+
+#====================================================================#
+# COMMANDS                                                           #
+#====================================================================#
 
 .PHONY: all clean install install-headers install-kernel
 .SUFFIXES: .o .c .S
