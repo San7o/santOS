@@ -1,1 +1,4 @@
 build/
+*~
+sysroot/
+myos.iso
