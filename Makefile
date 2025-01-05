@@ -78,3 +78,7 @@ help:
 	@echo "If you have qemu for the target architecture, you can"
 	@echo "boot the kernel with \"make qemu\"."
 	@$(call print_banner)
+
+#
+# End of Makefile
+#====================================================================#
