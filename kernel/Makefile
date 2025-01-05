@@ -1,39 +1,37 @@
 #====================================================================#
 #                                                                    #
-#                        KERNEL MAKEFILE                             #
+#                          KERNEL MAKEFILE                           #
+#                                                                    #
+# -------------------------------------------------------------------#
+#                                                                    #
+# This Makefile is responsible for building the main kernel          #
+# executable, all the files in the `root/kernel` directory will be   #
+# compiled here.                                                     #
+# Additionally, the following commands are provided:                 #
+# - install-kernel: installs the kernel in $DESTDIR                  #
+# - install-headers: copies the headers inside $DESTDIR/$INCLUDEDIR  #
+# - install: combines the previous two                               #
+# - clean: cleans the build files                                    #
+#                                                                    #
+# Note that you should run the `root/config.sh` script before        #
+# building anything.                                                 #
 #                                                                    #
 #====================================================================#
+# VARIABLES
 #
-# This Makefile is responsible for building the main kernel
-# executable, all the files in the `root/kernel` directory will be
-# compiled here.
-# Additionally, the following commands are provided:
-# - install-kernel: installs the kernel in $DESTDIR
-# - install-headers: copies the headers inside $DESTDIR/$INCLUDEDIR
-# - install: combines the previous two
-# - clean: cleans the build files
-#
-# Note that you should run the `root/config.sh` script before building
-# anything, or you could directly use `root/build.sh` wich
-# automatically sets the necessary environmnet.
-
-
-#====================================================================#
-# VARIABLES                                                          #
-#====================================================================#
 
 # Target
-HOSTARCH?=i386
+ARCH?=i386
 
 # Input directories
-ARCHDIR=arch/$(HOSTARCH)
+ARCHDIR=arch/$(ARCH)
 
 # Output Directories
 DESTDIR?=
 PREFIX?=build/
 EXEC_PREFIX?=$(PREFIX)
-BOOTDIR?=$(EXEC_PREFIX)/boot    # The kernel will be installed here
-INCLUDEDIR?=$(PREFIX)/include   # Headers will be installed here
+BOOTDIR?=$(EXEC_PREFIX)/boot       # The kernel will be installed here
+INCLUDEDIR?=$(PREFIX)/include         # Headers will be installed here
 
 # Subprojects
 include $(ARCHDIR)/make.config
@@ -45,7 +43,7 @@ LIBS?=
 CFLAGS:=$(CFLAGS) -ffreestanding -Wall -Wextra -Werror \
         -Wpedantic
 LDFLAGS:=$(LDFLAGS)
-LIBS:=$(LIBS) -nostdlib -L$(PREFIX)/lib -lk -lgcc
+LIBS:=$(LIBS) -nostdlib -L$(PREFIX)/lib -lk -lgcc    # -lk is the libk
 
 CFLAGS:=$(CFLAGS) $(KERNEL_ARCH_CFLAGS)
 LDFLAGS:=$(LDFLAGS) $(KERNEL_ARCH_LDFLAGS)
@@ -53,8 +51,8 @@ LIBS:=$(LIBS) $(KERNEL_ARCH_LIBS)
 
 
 #====================================================================#
-# OBJECT FILES                                                       #
-#====================================================================#
+# OBJECT FILES
+#
 
 KERNEL_OBJS=\
 $(KERNEL_ARCH_OBJS) \
@@ -78,8 +76,8 @@ $(ARCHDIR)/crtn.o \
 
 
 #====================================================================#
-# BUILDING                                                           #
-#====================================================================#
+# BUILDING
+#
 
 .PHONY: all clean install install-headers install-kernel
 .SUFFIXES: .o .c .S
@@ -91,18 +89,21 @@ myos.kernel: $(OBJS) $(ARCHDIR)/linker.ld
 	grub-file --is-x86-multiboot myos.kernel
 
 $(ARCHDIR)/crtbegin.o $(ARCHDIR)/crtend.o:
-	OBJ=`$(CC) $(CFLAGS) $(LDFLAGS) -print-file-name=$(@F)` && cp "$$OBJ" $@
+	OBJ=`$(CC) $(CFLAGS) $(LDFLAGS) -print-file-name=$(@F)` \
+        && cp "$$OBJ" $@
 
 .c.o:
-	$(CC) -MD -c $< -o $@ -std=gnu11 $(CFLAGS)
+	@echo " * [CC] $@"
+	@$(CC) -MD -c $< -o $@ -std=gnu11 $(CFLAGS)
 
 .S.o:
-	$(CC) -MD -c $< -o $@ $(CFLAGS) $(CPPFLAGS)
+	@echo " * [CC] $@"
+	@$(CC) -MD -c $< -o $@ $(CFLAGS)
 
 
 #====================================================================#
-# ADDITIONAL COMMANDS                                                #
-#====================================================================#
+# ADDITIONAL COMMANDS
+#
 
 clean:
 	rm -f myos.kernel
@@ -120,3 +121,8 @@ install-kernel: myos.kernel
 	cp myos.kernel $(DESTDIR)$(BOOTDIR)
 
 -include $(OBJS:.o=.d)
+
+
+#
+# End of Makefile
+#====================================================================#

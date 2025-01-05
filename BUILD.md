@@ -9,10 +9,12 @@ To build the OS you will need the following:
 - qemu to run the OS
 - make
 
-To build the OS you can use the handy [build.sh](./build.sh) bash
-script wich provides useful functionalities.
+To build the OS, first you need to `source config.sh`. This file
+exports all the required configuration, you can change It as you
+require. After this, you can call `make` to build everything,
+or `make help` to get more informations.
 ```bash
-bash> ./build.sh help
-Usage: ./build.sh [build|clean|iso|qemu|help]
+source config.sh
+make help
 ```
 
