@@ -37,8 +37,14 @@ function qemu
   return
 }
 
+function help
+{
+  echo "Usage: $0 [build|iso|qemu|help]"
+  return
+}
+
 if [ $? -eq 1 ]; then
-  echo "Usage: $0 [build|iso|qemu]"
+  help
   exit
 fi
 
@@ -55,5 +61,9 @@ if [ "$1" == "qemu" ]; then
   build
   iso
   qemu
+  exit
+fi
+if [ "$1" == "help" ]; then
+  help
   exit
 fi
