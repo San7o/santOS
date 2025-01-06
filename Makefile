@@ -6,7 +6,7 @@
 #                                                                    #
 # This makefile is the central place for the kernel build system,    #
 # from here all the subprojects are built. The build system can      #
-# be configured from the `root/config.sh` file, you should source    #
+# be configured from the "root/config.sh" file, you should source    #
 # it before trying to compile. Usually, you can just run this to     #
 # build everything you need:                                         #
 # ```                                                                #
@@ -17,11 +17,76 @@
 # dependencies and additional information.                           #
 #                                                                    #
 #====================================================================#
+#====================================================================#
+# DEFAULT VARIABLES
+#
+# You can set those variables in root/config.sh and source it with
+# "source config.sh" before running this makefile. The following
+# variables are the default values in case you forgot to source the
+# config file, to ensure that you don't install everything in
+# random places in your system.
+#
+
+# Projects to compile
+# Note that the order of the projects will be the order in which they
+# will be built, from left to right.
+SYSTEM_HEADER_PROJECTS?=libc kernel
+PROJECTS?=libc kernel
+
+# Program locations
+AR_DIR?=~/opt/cross/bin
+AS_DIR?=~/opt/cross/bin
+CC_DIR?=~/opt/cross/bin
+QEMU_DIR?=/usr/bin
+GRUB_DIR?=~/opt/bin
+
+# Target
+HOST?=i686-elf
+# The target architecture
+ARCH?=i386
+
+# Configure the cross-compiler to use the desired system root.
+SYSROOT?=$(shell pwd)/sysroot
+
+# Compiler Flags
+CFLAGS?=-O2 -g
+
+# Output directories
+PREFIX?=$(shell pwd)/sysroot
+EXEC_PREFIX?=$(PREFIX)
+BOOTDIR?=$(PREFIX)/boot
+LIBDIR?=$(EXEC_PREFIX)/lib
+INCLUDEDIR?=$(PREFIX)/include
+
+# Compilers
+MAKE?=make
+# Override the default one
+ifeq ($(AR),ar)
+AR=$(AR_DIR)/$(HOST)-ar
+endif
+ifeq ($(AS),as)
+AS=$(AS_DIR)/$(HOST)-as
+endif
+ifeq ($(CC),cc)
+CC=$(CC_DIR)/$(HOST)-gcc  --sysroot=$(SYSROOT) -isystem $(INCLUDEDIR)
+endif
+
+# We need this to pass those variables to sub-makes
+override AR:=$(AR)
+override AS:=$(AS)
+override CC:=$(CC)
+
+# Output names
+ISO_OUTPUT_NAME?=myos.iso
+
+SUB_MAKE_VARIABLES:=QEMU_DIR GRUB_DIR ARCH SYSROOT MAKE AR AS CC \
+CFLAGS PREFIX EXEC_PREFIX BOOTDIR LIBDIR INCLUDEDIR ISO_OUTPUT_NAME
 
 
 #====================================================================#
 # FUNCTIONS
 #
+
 define print_banner
   echo "=======================================================";
 endef
@@ -30,6 +95,7 @@ endef
 #====================================================================#
 # COMMANDS
 #
+
 .PHONY: all iso qemu clean help
 
 # Builds the selected projects
@@ -37,27 +103,30 @@ all:
 	@for PROJECT in $(PROJECTS); do \
 	  NAME=$$(echo $$PROJECT | tr '[:lower:]' '[:upper:]'); \
           echo "* INSTALLING $$NAME..."; \
-	  $(MAKE) -C $$PROJECT install; \
+	  env $(foreach var, $(SUB_MAKE_VARIABLES),$(var)="$($(var))") \
+            $(MAKE) -C $$PROJECT install; \
 	  $(call print_banner) \
 	done
 
 iso:
 	@echo "* CREATING ISO..."
-	mkdir $(SYSROOT)/boot/grub || :
-	cp grub.cfg $(SYSROOT)/boot/grub/
-	$(GRUB_DIR)/grub-mkrescue -o $(ISO_OUTPUT_NAME) sysroot
+	@mkdir $(SYSROOT)/boot/grub || :
+	@cp grub.cfg $(SYSROOT)/boot/grub/
+	@$(GRUB_DIR)/grub-mkrescue -o $(ISO_OUTPUT_NAME) sysroot
 	@$(call print_banner)
 
 qemu: iso
 	@echo "* LAUNCHING QEMU..."
-	$(QEMU_DIR)/qemu-system-i386 -cdrom myos.iso
+	@$(QEMU_DIR)/qemu-system-i386 -cdrom $(ISO_OUTPUT_NAME)
 
 clean:
 	@echo "* CLEANING PROJECT..."
-	make -C kernel clean
-	make -C libc clean
-	rm $(ISO_OUTPUT_NAME) 2>/dev/null || :
-	rm -rf $(SYSROOT) 2>/dev/null || :
+	@env $(foreach var, $(SUB_MAKE_VARIABLES),$(var)="$($(var))") \
+          $(MAKE) -C kernel clean
+	@env $(foreach var, $(SUB_MAKE_VARIABLES),$(var)="$($(var))") \
+          $(MAKE) -C libc clean
+	@rm $(ISO_OUTPUT_NAME) 2>/dev/null || :
+	@rm -rf $(SYSROOT) 2>/dev/null || :
 	@$(call print_banner)
 
 help:

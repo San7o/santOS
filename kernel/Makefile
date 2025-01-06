@@ -17,17 +17,18 @@
 # building anything.                                                 #
 #                                                                    #
 #====================================================================#
-
-
 #====================================================================#
 # VARIABLES
 #
+
+OUT_NAME=myos.kernel
 
 # Target
 ARCH?=i386
 
 # Input directories
 ARCHDIR=arch/$(ARCH)
+LINKER_SCRIPT=$(ARCHDIR)/linker.ld
 
 # Output Directories
 DESTDIR?=
@@ -38,6 +39,7 @@ INCLUDEDIR?=$(PREFIX)/include         # Headers will be installed here
 
 # Subprojects
 include $(ARCHDIR)/make.config
+include kernel/make.config
 
 # Compiler Flags
 CFLAGS?=-O2 -g
@@ -57,25 +59,14 @@ LIBS:=$(LIBS) $(KERNEL_ARCH_LIBS)
 # OBJECT FILES
 #
 
-KERNEL_OBJS=\
-$(KERNEL_ARCH_OBJS) \
-kernel/kernel.o \
-
 OBJS=\
-$(ARCHDIR)/crti.o \
-$(ARCHDIR)/crtbegin.o \
-$(KERNEL_OBJS) \
-$(ARCHDIR)/crtend.o \
-$(ARCHDIR)/crtn.o \
+$(KERNEL_ARCH_OBJS) \
+$(KERNEL_OBJS)
 
 LINK_LIST=\
 $(LDFLAGS) \
-$(ARCHDIR)/crti.o \
-$(ARCHDIR)/crtbegin.o \
-$(KERNEL_OBJS) \
-$(LIBS) \
-$(ARCHDIR)/crtend.o \
-$(ARCHDIR)/crtn.o \
+$(OBJS) \
+$(LIBS)
 
 
 #====================================================================#
@@ -85,14 +76,16 @@ $(ARCHDIR)/crtn.o \
 .PHONY: all clean install install-headers install-kernel
 .SUFFIXES: .o .c .S
 
-all: myos.kernel
+all: $(OUT_NAME)
 
-myos.kernel: $(OBJS) $(ARCHDIR)/linker.ld
-	$(CC) -T $(ARCHDIR)/linker.ld -o $@ $(CFLAGS) $(LINK_LIST)
-	grub-file --is-x86-multiboot myos.kernel
+$(OUT_NAME): $(OBJS) $(LINKER_SCRIPT)
+	@echo " * [LD] $@"
+	@$(CC) -T $(LINKER_SCRIPT) -o $@ $(CFLAGS) $(LINK_LIST)
+	@grub-file --is-x86-multiboot $(OUT_NAME)
 
 $(ARCHDIR)/crtbegin.o $(ARCHDIR)/crtend.o:
-	OBJ=`$(CC) $(CFLAGS) $(LDFLAGS) -print-file-name=$(@F)` \
+	@echo " * [CC] crtbegin.o and crtend.o"
+	@OBJ=`$(CC) $(CFLAGS) $(LDFLAGS) -print-file-name=$(@F)` \
         && cp "$$OBJ" $@
 
 .c.o:
@@ -109,19 +102,22 @@ $(ARCHDIR)/crtbegin.o $(ARCHDIR)/crtend.o:
 #
 
 clean:
-	rm -f myos.kernel
-	rm -f $(OBJS) *.o */*.o */*/*.o
-	rm -f $(OBJS:.o=.d) *.d */*.d */*/*.d
+	@echo " * Cleaning kernel build files..."
+	@rm -f $(OUT_NAME)
+	@rm -f $(OBJS) *.o */*.o */*/*.o
+	@rm -f $(OBJS:.o=.d) *.d */*.d */*/*.d
 
 install: install-headers install-kernel
 
 install-headers:
-	mkdir -p $(DESTDIR)$(INCLUDEDIR)
-	cp -R --preserve=timestamps include/. $(DESTDIR)$(INCLUDEDIR)/.
+	@echo " * Installing headers..."
+	@mkdir -p $(DESTDIR)$(INCLUDEDIR)
+	@cp -R --preserve=timestamps include/. $(DESTDIR)$(INCLUDEDIR)/.
 
-install-kernel: myos.kernel
-	mkdir -p $(DESTDIR)$(BOOTDIR)
-	cp myos.kernel $(DESTDIR)$(BOOTDIR)
+install-kernel: $(OUT_NAME)
+	@echo " * Installing the kernel..."
+	@mkdir -p $(DESTDIR)$(BOOTDIR)
+	@cp $(OUT_NAME) $(DESTDIR)$(BOOTDIR)
 
 -include $(OBJS:.o=.d)
 

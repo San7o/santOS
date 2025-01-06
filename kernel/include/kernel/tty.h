@@ -4,7 +4,9 @@
 #include <stddef.h>
 #include <stdint.h>
 
-extern size_t terminal_row;        /* Current row of the terminal */
+#define VGA_ADDRESS 0xB8000        /* The VGA buffer starts here     */
+
+extern size_t terminal_row;        /* Current row of the terminal    */
 extern size_t terminal_column;     /* Current column of the terminal */
 extern uint8_t terminal_color;
 extern uint16_t* terminal_buffer;

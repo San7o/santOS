@@ -24,11 +24,17 @@
  *
  */
 
-#ifndef LIBC_STIRNG_H
-#define LIBC_STIRNG_H
+#ifndef LIBC_STDIO_H
+#define LIBC_STDIO_H
 
-#include <stddef.h>
+#if __STDC_HOSTED__ == 0  // Freestanding
 
-size_t strlen(const char *str);
+int putk(const char *s);
+int printk(const char *restrict format, ...);
+
+#else // Hosted
+
+
+#endif
 
 #endif

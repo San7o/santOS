@@ -18,8 +18,6 @@
 # building anything.                                                 #
 #                                                                    #
 #====================================================================#
-
-
 #====================================================================#
 # VARIABLES
 #
@@ -30,44 +28,70 @@ ARCH?=i386
 # Input Directories
 ARCHDIR=arch/$(ARCH)
 
+# Includes
+# All the objects are defined in those files
+include $(ARCHDIR)/make.config
+include string/make.config
+include stdio/make.config
+
 # Output directories
 DESTDIR?=
 PREFIX?=/usr/local
 EXEC_PREFIX=$(PREFIX)/include
 LIBDIR?=$(EXEC_PREFIX)/lib        # The library will be installed here
-CFLAGS:=$(CFLAGS) $(ARCH_CFLAGS)
-LIBK_CFLAGS:=$(LIBK_CFLAGS) $(KERNEL_ARCH_CFLAGS)
-
-# Subprojects
-include $(ARCHDIR)/make.config
 
 # Compiler Flags
+CFLAGS:=\
+$(CFLAGS) \
+$(ARCH_CFLAGS) \
+$(STRING_CFLAGS) \
+$(STDIO_CFLAGS)
+
+LIBK_CFLAGS:=\
+$(LIBK_CFLAGS) \
+$(LIBK_ARCH_CFLAGS) \
+$(LIBK_STRING_CLAGS) \
+$(LIBK_STDIO_CFLAGS)
+
 CFLAGS?=-O2 -g
 LDFLAGS?=
 LIBS?=
 CFLAGS:=$(CFLAGS) -ffreestanding -Wall -Wextra -Wpedantic \
         -Werror -Wconversion
-LIBK_CFLAGS:=$(CFLAGS)
+LIBK_CFLAGS:=$(CFLAGS) $(LIBK_CFLAGS)
 
 
 #====================================================================#
 # OBJECT FILES
 #
 
-FREEOBJS=\
-$(ARCH_FREEOBJS) \
-string/strlen.o \
+# Objects for both libk and libc
+COMMON_OBJS:=\
+$(COMMON_ARCH_OBJS) \
+$(COMMON_STRING_OBJS) \
+$(COMMON_STDIO_OBJS)
 
-HOSTEDOBJS= \
-$(ARCH_HOSTEDOBJS) \
+# libk
+LIBK_OBJS:=\
+$(COMMON_OBJS) \
+$(LIBK_ARCH_OBJS) \
+$(LIBK_STRING_OBJS) \
+$(LIBK_STDIO_OBJS) \
 
-OBJS=\
-$(FREEOBJS) \
-$(HOSTEDOBJS) \
+# libc
+LIBC_BJS:=\
+$(COMMON_OBJS) \
+$(LIBC_ARCH_OBJS) \
+$(LIBC_STRING_OBJS) \
+$(LIBC_STDIO_OBJS) \
 
-LIBK_OBJS=$(FREEOBJS:.o=.libk.o)
-#BINARIES=libc.a libk.a                       # libc not available yet
-BINARIES=libk.a
+OBJS:=\
+$(COMMON_OBJS) \
+$(LIBK_OBJS) \
+$(LIBC_OBJS)
+
+LIBK_OBJS:=$(LIBK_OBJS:.o=.libk.o)
+BINARIES=libk.a #libc.a                       # libc not available yet
 
 
 #====================================================================#
@@ -75,30 +99,33 @@ BINARIES=libk.a
 #
 
 .PHONY: all clean install install-headers install-libs
-.SUFFIXES: .o .libk.o .c. S
+.SUFFIXES: .o .libk.o .c .S
 
 all: $(BINARIES)
 
-libc.a: $(OBJS)
-	$(AR) rcs $@ $(OBJS)
+libc.a: $(LIBC_OBJS)
+	@echo " * [AR] $@"
+	@$(AR) rcs $@ $(LIBC_OBJS)
 
 libk.a: $(LIBK_OBJS)
-	$(AR) rcs $@ $(LIBK_OBJS)
+	@echo " * [AR] $@"
+	@$(AR) rcs $@ $(LIBK_OBJS)
 
 .c.o:
 	@echo " * [CC] $@"
-	$(CC) -MD -c $< -o $@ -std=gnu11 $(CFLAGS)
+	@$(CC) -MD -c $< -o $@ -std=gnu11 $(CFLAGS)
 
 .c.S:
-	$(CC) -MD -c $< -o $@ $(CFLAGS)
+	@echo " * [CC] $@"
+	@$(CC) -MD -c $< -o $@ $(CFLAGS)
 
 .c.libk.o:
 	@echo " * [CC] $@"
-	$(CC) -MD -c $< -o $@ -std=gnu11 $(LIBK_CFLAGS)
+	@$(CC) -MD -c $< -o $@ -std=gnu11 $(LIBK_CFLAGS)
 
 .S.libk.o:
 	@echo " * [CC] $@"
-	$(CC) -MD -c $< -o $@ $(LIBK_CFLAGS)
+	@$(CC) -MD -c $< -o $@ $(LIBK_CFLAGS)
 
 
 #====================================================================#
@@ -106,21 +133,24 @@ libk.a: $(LIBK_OBJS)
 #
 
 clean:
-	rm -f $(BINARIES) *.a
-	rm -f $(OBJS) $(LIBK_OBJS) *.o */*.o */*/*.o
-	rm -f $(OBJS:.o=.d) $(LIBK_OBJS:.o=.d) *.d */*.d */*/*.d
+	@echo " * Cleaning libc build files... $@"
+	@rm -f $(BINARIES) *.a
+	@rm -f $(LIBC_OBJS) $(LIBK_OBJS) *.o */*.o */*/*.o
+	@rm -f $(LIBC_OBJS:.o=.d) $(LIBK_OBJS:.o=.d) *.d */*.d */*/*.d
 
 install: install-headers install-libs
 
 install-headers:
-	mkdir -p $(DESTDIR)$(INCLUDEDIR)
-	cp -R --preserve=timestamps include/. $(DESTDIR)$(INCLUDEDIR)/.
+	@echo " * Installing Headers... $@"
+	@mkdir -p $(DESTDIR)$(INCLUDEDIR)
+	@cp -R --preserve=timestamps include/. $(DESTDIR)$(INCLUDEDIR)/.
 
 install-libs: $(BINARIES)
-	mkdir -p $(DESTDIR)$(LIBDIR)
-	cp $(BINARIES) $(DESTDIR)$(LIBDIR)
+	@echo " * Installing libs... $@"
+	@mkdir -p $(DESTDIR)$(LIBDIR)
+	@cp $(BINARIES) $(DESTDIR)$(LIBDIR)
 
--include $(OBJS:.o=.d)
+-include $(HOSTEDOBJS:.o=.d)
 -include $(LIBK_OBJS:.o=.d)
 
 #

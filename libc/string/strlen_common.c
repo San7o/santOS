@@ -24,11 +24,13 @@
  *
  */
 
-#ifndef LIBC_STIRNG_H
-#define LIBC_STIRNG_H
-
+#include <string.h>
 #include <stddef.h>
 
-size_t strlen(const char *str);
-
-#endif
+size_t strlen(const char *str)
+{
+    size_t len = 0;
+    while (str[len])
+        len++;
+    return len;
+}
