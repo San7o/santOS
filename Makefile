@@ -49,7 +49,7 @@ ARCH?=i386
 SYSROOT?=$(shell pwd)/sysroot
 
 # Compiler Flags
-CFLAGS?=-O2 -g
+CFLAGS?=-O2 -g -Wall -Wextra -Werror -Wpedantic
 
 # Output directories
 PREFIX?=$(shell pwd)/sysroot
@@ -80,7 +80,7 @@ override CC:=$(CC)
 ISO_OUTPUT_NAME?=myos.iso
 
 SUB_MAKE_VARIABLES:=QEMU_DIR GRUB_DIR ARCH SYSROOT MAKE AR AS CC \
-CFLAGS PREFIX EXEC_PREFIX BOOTDIR LIBDIR INCLUDEDIR ISO_OUTPUT_NAME
+CFLAGS PREFIX EXEC_PREFIX BOOTDIR LIBDIR INCLUDEDIR
 
 
 #====================================================================#
@@ -102,25 +102,25 @@ endef
 all:
 	@for PROJECT in $(PROJECTS); do \
 	  NAME=$$(echo $$PROJECT | tr '[:lower:]' '[:upper:]'); \
-          echo "* INSTALLING $$NAME..."; \
+          echo " * INSTALLING $$NAME..."; \
 	  env $(foreach var, $(SUB_MAKE_VARIABLES),$(var)="$($(var))") \
             $(MAKE) -C $$PROJECT install; \
 	  $(call print_banner) \
 	done
 
 iso:
-	@echo "* CREATING ISO..."
+	@echo " * CREATING ISO..."
 	@mkdir $(SYSROOT)/boot/grub || :
 	@cp grub.cfg $(SYSROOT)/boot/grub/
 	@$(GRUB_DIR)/grub-mkrescue -o $(ISO_OUTPUT_NAME) sysroot
 	@$(call print_banner)
 
 qemu: iso
-	@echo "* LAUNCHING QEMU..."
+	@echo " * LAUNCHING QEMU..."
 	@$(QEMU_DIR)/qemu-system-i386 -cdrom $(ISO_OUTPUT_NAME)
 
 clean:
-	@echo "* CLEANING PROJECT..."
+	@echo " * CLEANING PROJECT..."
 	@env $(foreach var, $(SUB_MAKE_VARIABLES),$(var)="$($(var))") \
           $(MAKE) -C kernel clean
 	@env $(foreach var, $(SUB_MAKE_VARIABLES),$(var)="$($(var))") \

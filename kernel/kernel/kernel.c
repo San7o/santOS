@@ -30,6 +30,7 @@
  */
 
 #include <kernel/tty.h>
+#include <stdio.h>
 #include "../arch/i386/vga.h"
 
 #if defined(__linux__)
@@ -46,20 +47,12 @@
  * This is the entry point for the kernel. It initializes the terminal
  * and writes a message to the terminal.
  */
-void
-kernel_main(void)
+void kernel_main(void)
 {
     terminal_initialize();
-    terminal_setcolor(VGA_COLOR_LIGHT_BLUE);
-    char output = '0';
-    while (1)
-    {
-        output++;
-        if (output == '9')
-        {
-            output = '0';
-        }
-        terminal_writestring("Hello, kernel World!\n");
-        terminal_writestring(&output);
-    }
+    terminal_setcolor(VGA_COLOR_GREEN);
+
+    printk("Hello World! %x", 1234);
+    return;
+    
 }

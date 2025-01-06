@@ -6,12 +6,13 @@ architecture.
 ## Roadmap
 
 The OSdev wiki suggests to implement the following first:
-- printk
-- output to a serial port for debugging purposes
-- having a working interrupt/exception handling system that can dump
-  the contents of the registers
-- plan your memory map
-- malloc and free
+- [x] setup and build system
+- [x] printk
+- [ ] output to a serial port for debugging purposes
+     having a working interrupt/exception handling system that can dump
+     the contents of the registers
+- [ ] plan the memory map
+- [ ] malloc and free
 
 # Compile the kernel
 

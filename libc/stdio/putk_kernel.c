@@ -24,23 +24,15 @@
  *
  */
 
-#ifndef _LIBC_STDIO_H
-#define _LIBC_STDIO_H
+#include <stdio.h>
+#include <string.h>         /* strlen */
 
-#define EOF -1
-
-#if __STDC_HOSTED__ == 0  // Freestanding
-
-/// Print a single char on screen
-void putck(char c);
-/// Print a string on screen
-int putk(char *s);
-/// Print a formatted string on screen
-int printk(const char *restrict format, ...);
-
-#else // Hosted
-
-
-#endif
-
-#endif
+int putk(char *s)
+{
+  size_t len = strlen(s);
+  for (size_t i = 0; i < len; ++i)
+  {
+    putck(s[i]);
+  }
+  return (int) len;
+}

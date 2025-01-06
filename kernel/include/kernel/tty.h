@@ -17,8 +17,7 @@ extern uint16_t* terminal_buffer;
  *
  * @param color The color to set the terminal to
  */
-void
-terminal_setcolor(uint8_t color);
+void terminal_setcolor(uint8_t color);
 
 /*! @brief Put a character on the terminal
  *
@@ -31,8 +30,7 @@ terminal_setcolor(uint8_t color);
  *
  * @param c The character to put on the terminal
  */
-void
-terminal_putentryat(char c, uint8_t color, size_t x, size_t y);
+void terminal_putentryat(char c, uint8_t color, size_t x, size_t y);
 
 /*! @brief Put a character on the terminal
  *
@@ -45,8 +43,13 @@ terminal_putentryat(char c, uint8_t color, size_t x, size_t y);
  *
  * @param c The character to put on the terminal
  */
-void
-terminal_putchar(char c);
+void terminal_putchar(char c);
+
+/*!
+ * @brief Write a string to the terminal
+ * @param data The string to write to the terminal
+ */
+int terminal_write(char* data, size_t size);
 
 /*! @brief Write a string to the terminal
  *
@@ -56,19 +59,7 @@ terminal_putchar(char c);
  *
  * @param data The string to write to the terminal
  */
-void
-terminal_write(char* data, size_t size);
-
-/*! @brief Write a string to the terminal
- *
- * This function writes a string to the terminal by looping
- * through each character in the string and calling terminal_putchar
- * on each character.
- *
- * @param data The string to write to the terminal
- */
-void
-terminal_writestring(char* data);
+int terminal_writestring(char* data);
 
 /*! @brief Initialize the terminal
  *
@@ -77,7 +68,6 @@ terminal_writestring(char* data);
  * address. It loops through the buffer and sets each character to a space
  * with the default color.
  */
-void
-terminal_initialize(void);
+void terminal_initialize(void);
 
 #endif

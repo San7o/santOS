@@ -45,8 +45,7 @@ include kernel/make.config
 CFLAGS?=-O2 -g
 LDFLAGS?=
 LIBS?=
-CFLAGS:=$(CFLAGS) -ffreestanding -Wall -Wextra -Werror \
-        -Wpedantic
+CFLAGS:=$(CFLAGS) -ffreestanding
 LDFLAGS:=$(LDFLAGS)
 LIBS:=$(LIBS) -nostdlib -L$(PREFIX)/lib -lk -lgcc    # -lk is the libk
 
@@ -78,7 +77,7 @@ $(LIBS)
 
 all: $(OUT_NAME)
 
-$(OUT_NAME): $(OBJS) $(LINKER_SCRIPT)
+$(OUT_NAME): $(OBJS) $(LINKER_SCRIPT) $(SYSROOT)/lib/libk.a
 	@echo " * [LD] $@"
 	@$(CC) -T $(LINKER_SCRIPT) -o $@ $(CFLAGS) $(LINK_LIST)
 	@grub-file --is-x86-multiboot $(OUT_NAME)

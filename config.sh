@@ -31,7 +31,7 @@ export AS=${AS_DIR}/${HOST}-as
 export CC=${CC_DIR}/${HOST}-gcc
 
 # Compiler Flags
-export CFLAGS='-O2 -g'
+export CFLAGS='-O2 -g -Wall -Wextra -Werror -Wpedantic' 
 
 # Output directories
 export PREFIX=$(pwd)/sysroot

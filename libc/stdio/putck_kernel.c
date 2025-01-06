@@ -24,23 +24,12 @@
  *
  */
 
-#ifndef _LIBC_STDIO_H
-#define _LIBC_STDIO_H
+#include <stdio.h>
 
-#define EOF -1
+#include <kernel/tty.h>
 
-#if __STDC_HOSTED__ == 0  // Freestanding
-
-/// Print a single char on screen
-void putck(char c);
-/// Print a string on screen
-int putk(char *s);
-/// Print a formatted string on screen
-int printk(const char *restrict format, ...);
-
-#else // Hosted
-
-
-#endif
-
-#endif
+void putck(char c)
+{
+  terminal_putchar(c);
+  return;
+}
