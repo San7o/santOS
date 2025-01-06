@@ -102,7 +102,14 @@ endef
 all:
 	@for PROJECT in $(PROJECTS); do \
 	  NAME=$$(echo $$PROJECT | tr '[:lower:]' '[:upper:]'); \
-          echo " * INSTALLING $$NAME..."; \
+          echo " * INSTALLING HEADERS FOR $$NAME..."; \
+	  env $(foreach var, $(SUB_MAKE_VARIABLES),$(var)="$($(var))") \
+            $(MAKE) -C $$PROJECT install-headers; \
+	  $(call print_banner) \
+	done
+	@for PROJECT in $(PROJECTS); do \
+	  NAME=$$(echo $$PROJECT | tr '[:lower:]' '[:upper:]'); \
+          echo " * INSTALLING HEADERS FOR $$NAME..."; \
 	  env $(foreach var, $(SUB_MAKE_VARIABLES),$(var)="$($(var))") \
             $(MAKE) -C $$PROJECT install; \
 	  $(call print_banner) \

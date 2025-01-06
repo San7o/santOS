@@ -1,3 +1,4 @@
 # TODO
 
-- printf and likes
+- testing setup
+- output to serial port
