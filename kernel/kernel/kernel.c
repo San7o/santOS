@@ -24,11 +24,6 @@
  *
  */
 
-/*
- * A list of free standing libraries can be found here:
- * https://en.cppreference.com/w/cpp/freestanding
- */
-
 #include <kernel/tty.h>
 #include <stdio.h>
 #include "../arch/i386/vga.h"
@@ -42,17 +37,14 @@
 #error "This kernel needs to be compiled with a ix86-elf compiler"
 #endif
 
-/*! @brief Kernel entry point
- *
- * This is the entry point for the kernel. It initializes the terminal
- * and writes a message to the terminal.
- */
 void kernel_main(void)
 {
     terminal_initialize();
     terminal_setcolor(VGA_COLOR_GREEN);
 
-    printk("Hello World! %x", 1234);
+    const char* s = "Ciaone";
+    printk("Hello World! %d\n", 1234);
+    printk("Hello World! %x\n", 1234);
+    printk("Hello World! %s\n", s);
     return;
-    
 }

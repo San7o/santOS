@@ -59,7 +59,7 @@
  *        [-]0xh.hhhp+-d; for A conversion, the prefix is 0X and the
  *        letters are uppercase.
  *  c     the int argument is converted to an unsigned char.
- *  s     the const char* argumen is expected and the characters that
+ *  s     the const char* argument is expected and the characters that
  *        it points to will be written ip to a terminating null byte.
  *  %     A '%' is written
  */
@@ -261,16 +261,16 @@ int print_unsigned_octal(enum length_modifier length_mod, va_list argptr)
   switch(length_mod)
   {
   case LEN_SIGNED_CHAR:
-    return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, int),
+    return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, unsigned int),
 				     sizeof(char), 8);
   case LEN_SHORT:
-    return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, int),
+    return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, unsigned int),
 				     sizeof(short), 8);
   case LEN_LONG: break;
-    return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, long),
+    return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, unsigned long),
 				     sizeof(long), 8);
   case LEN_LONG_LONG: break;
-    return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, long long),
+    return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, unsigned long long),
 				     sizeof(long long), 8);
   case LEN_LONG_DOUBLE: break;
     return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, long double),
@@ -285,7 +285,7 @@ int print_unsigned_octal(enum length_modifier length_mod, va_list argptr)
     return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, ptrdiff_t),
 				     sizeof(ptrdiff_t), 8);
   case LEN_NONE:
-    return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, int),
+    return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, unsigned int),
 				     sizeof(int), 8);
   default: return -1;
   }
@@ -297,16 +297,16 @@ int print_unsigned_decimal(enum length_modifier length_mod, va_list argptr)
   switch(length_mod)
   {
   case LEN_SIGNED_CHAR:
-    return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, int),
+    return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, unsigned int),
 				     sizeof(char), 10);
   case LEN_SHORT:
-    return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, int),
+    return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, unsigned int),
 				     sizeof(short), 10);
   case LEN_LONG: break;
-    return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, long),
+    return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, unsigned long),
 				     sizeof(long), 10);
   case LEN_LONG_LONG: break;
-    return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, long long),
+    return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, unsigned long long),
 				     sizeof(long long), 10);
   case LEN_LONG_DOUBLE: break;
     return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, long double),
@@ -321,7 +321,7 @@ int print_unsigned_decimal(enum length_modifier length_mod, va_list argptr)
     return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, ptrdiff_t),
 				     sizeof(ptrdiff_t), 10);
   case LEN_NONE:
-    return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, int),
+    return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, unsigned int),
 				     sizeof(int), 10);
   default: return -1;
   }
@@ -333,16 +333,16 @@ int print_unsigned_hex(enum length_modifier length_mod, va_list argptr)
   switch(length_mod)
   {
   case LEN_SIGNED_CHAR:
-    return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, int),
+    return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, unsigned int),
 				     sizeof(char), 16);
   case LEN_SHORT:
-    return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, int),
+    return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, unsigned int),
 				     sizeof(short), 16);
   case LEN_LONG: break;
-    return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, long),
+    return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, unsigned long),
 				     sizeof(long), 16);
   case LEN_LONG_LONG: break;
-    return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, long long),
+    return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, unsigned long long),
 				     sizeof(long long), 16);
   case LEN_LONG_DOUBLE: break;
     return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, long double),
@@ -357,8 +357,31 @@ int print_unsigned_hex(enum length_modifier length_mod, va_list argptr)
     return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, ptrdiff_t),
 				     sizeof(ptrdiff_t), 16);
   case LEN_NONE:
-    return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr, int),
+    return _print_unsigned_base_impl((unsigned long long int) va_arg(argptr,unsigned  int),
 				     sizeof(int), 16);
+  default: return -1;
+  }
+  return 0;
+}
+
+int _print_string_impl(const char* s)
+{
+  int len = (int) strlen(s);
+  for (int i = 0; i < len; ++i)
+    putck(s[i]);
+  return len;
+}
+
+int print_string(enum length_modifier length_mod, va_list argptr)
+{
+  switch(length_mod)
+  {
+  case LEN_SIGNED_CHAR:
+    return _print_string_impl((const char*) va_arg(argptr, const char*));
+  case LEN_SHORT:
+    return _print_string_impl((const char*) va_arg(argptr, const char*));
+  case LEN_NONE:
+    return _print_string_impl((const char*) va_arg(argptr, const char*));
   default: return -1;
   }
   return 0;
@@ -385,7 +408,7 @@ int print_format(enum length_modifier length_mod,
   case CONV_SCIENTIFIC_OR_DECIMAL: /* TODO */ return -2;
   case CONV_DOUBLE_HEX:       /* TODO */ return -2;
   case CONV_UNSIGNED_CHAR:    putck((char) va_arg(argptr, int)); return 0;
-  case CONV_STRING:           /* TODO */ return -2;
+  case CONV_STRING:           return print_string(length_mod, argptr);
   case CONV_PERCENTAGE:       return print_percentage();
   default: return -1;
   }
@@ -428,6 +451,7 @@ int printk(const char *restrict format, ...)
 	  int n_printed = print_format(length_mod, con, argptr);
 	  if (n_printed < 0) goto err;
 	  bytes_sent += n_printed;
+	  state = STATE_READING;
 	}
 	else
 	{
@@ -446,6 +470,7 @@ int printk(const char *restrict format, ...)
 	  int n_printed = print_format(length_mod, con, argptr);
 	  if (n_printed < 0) goto err;
 	  bytes_sent += n_printed;
+	  state = STATE_READING;
 	}
 	goto err;
       }
