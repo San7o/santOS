@@ -2,4 +2,4 @@ build/
 *~
 sysroot/
 myos.iso
-config.sh
+/config.sh
