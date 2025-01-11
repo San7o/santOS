@@ -122,7 +122,7 @@ config:
 iso:
 	@echo " * CREATING ISO..."
 	@mkdir $(SYSROOT)/boot/grub || :
-	@cp grub.cfg $(SYSROOT)/boot/grub/
+	@cp boot/grub.cfg $(SYSROOT)/boot/grub/
 	@$(GRUB_DIR)/grub-mkrescue -o $(ISO_OUTPUT_NAME) sysroot
 	@$(call print_banner)
 
