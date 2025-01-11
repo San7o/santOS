@@ -31,7 +31,7 @@ make config
 The config file will be generated in the local directory, you will
 find descriptions of the options in the file itself.
 
-## BUILD
+## Build
 
 To build the project that you selected, you can simply run:
 
