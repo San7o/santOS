@@ -1,4 +1,13 @@
-# How to build the OS
+# Kernel Build System
+
+Welcome to the Kernel Build System. The kernel uses Makefiles to build
+and is divided into multiple projects.
+So far, the projects include:
+- kernel
+- libc
+- test
+
+## Dependencies
 
 To build the OS you will need the following:
 - A C crosscompiler toolchain for your target architecture (currently
@@ -9,12 +18,41 @@ To build the OS you will need the following:
 - qemu to run the OS
 - make
 
-To build the OS, first you need to `source config.sh`. This file
-exports all the required configuration, you can change It as you
-require. After this, you can call `make` to build everything,
-or `make help` to get more informations.
+## config.sh
+
+Before building anything, you should create your config.sh. This
+file contains the configuration options that will be used throughout
+this build, you should make all the necessary modification there.
+
 ```bash
-source config.sh
-make help
+make config
 ```
 
+The config file will be generated in the local directory, you will
+find descriptions of the options in the file itself.
+
+## BUILD
+
+To build the project that you selected, you can simply run:
+
+```bash
+source config.sh
+make
+```
+
+## ISO
+
+To create a bootable iso, run "make iso" after the" first make. This
+will genearte an iso file that can be booted in BIOS mode.
+
+```bash
+make iso
+```
+
+## Qemu
+
+If you have qemu for the target architecture, you can boot the kernel
+with "make qemu"."
+```bash
+make qemu
+```

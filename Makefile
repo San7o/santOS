@@ -6,9 +6,9 @@
 #                                                                    #
 # This makefile is the central place for the kernel build system,    #
 # from here all the subprojects are built. The build system can      #
-# be configured from the "root/config.sh" file, you should source    #
-# it before trying to compile. Usually, you can just run this to     #
-# build everything you need:                                         #
+# be configured from config.sh file, generated with "make config". Y #
+# You should source it before trying to compile. Usually, you can    #
+# just run this to build everything you need:                        #
 # ```                                                                #
 # source config.sh                                                   #
 # make                                                               #
@@ -20,7 +20,7 @@
 #====================================================================#
 # DEFAULT VARIABLES
 #
-# You can set those variables in root/config.sh and source it with
+# You can set those variables in config.sh and source it with
 # "source config.sh" before running this makefile. The following
 # variables are the default values in case you forgot to source the
 # config file, to ensure that you don't install everything in
@@ -115,6 +115,10 @@ all:
 	  $(call print_banner) \
 	done
 
+config:
+	@cp scripts/config.sh config.sh
+	@echo "config.sh created in $(shell pwd)"
+
 iso:
 	@echo " * CREATING ISO..."
 	@mkdir $(SYSROOT)/boot/grub || :
@@ -138,23 +142,8 @@ clean:
 
 help:
 	@$(call print_banner)
-	@echo "Welcome to the kernel build system. This makefile is the"
-	@echo "central place were all the subsystems are built."
-	@echo "Before building anything, you should take a look at"
-	@echo "config.sh. This file contains the configuration options"
-	@echo "that will be used throughout this build, you should make"
-	@echo "all the necessary modification there."
-	@echo ""
-	@echo "To build the project that you selected, you can simply"
-	@echo "run \"source config.sh\" and then \"make\"."
-	@echo ""
-	@echo "To create a bootable iso, run \"make iso\" after the"
-	@echo "first make. This will genearte an iso file that can be".
-	@echo "booted in BIOS mode."
-	@echo "If you have qemu for the target architecture, you can"
-	@echo "boot the kernel with \"make qemu\"."
+	@cat help.txt
 	@$(call print_banner)
-
 #
 # End of Makefile
 #====================================================================#
