@@ -1,3 +1,4 @@
 *.d
 *.kernel
+*.kernel_test
 *.o
