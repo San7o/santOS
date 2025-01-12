@@ -5,12 +5,13 @@ architecture.
 
 ## Roadmap
 
-The OSdev wiki suggests to implement the following first:
 - [x] setup and build system
 - [x] printk
+- [x] access multiboot info
+- [x] testing infrastructure
 - [ ] output to a serial port for debugging purposes
-     having a working interrupt/exception handling system that can dump
-     the contents of the registers
+- [ ] having a working interrupt/exception handling system that can dump
+      the contents of the registers
 - [ ] plan the memory map
 - [ ] malloc and free
 

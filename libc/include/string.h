@@ -30,5 +30,6 @@
 #include <stddef.h>
 
 size_t strlen(const char *str);
+char* strstr(const char *haystack, const char* needle);
 
 #endif

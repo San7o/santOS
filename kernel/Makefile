@@ -13,8 +13,8 @@
 # - install: combines the previous two                               #
 # - clean: cleans the build files                                    #
 #                                                                    #
-# Note that you should run the `root/config.sh` script before        #
-# building anything.                                                 #
+# Note that you should source the config.sh script before building   #
+# anything.                                                          #
 #                                                                    #
 #====================================================================#
 #====================================================================#
@@ -40,6 +40,8 @@ INCLUDEDIR?=$(PREFIX)/include         # Headers will be installed here
 # Subprojects
 include $(ARCHDIR)/make.config
 include kernel/make.config
+include tests/make.config
+include boot/make.config
 
 # Compiler Flags
 CFLAGS?=-O2 -g
@@ -60,12 +62,23 @@ LIBS:=$(LIBS) $(KERNEL_ARCH_LIBS)
 
 OBJS=\
 $(KERNEL_ARCH_OBJS) \
+$(BOOT_OBJS) \
 $(KERNEL_OBJS)
 
 LINK_LIST=\
 $(LDFLAGS) \
 $(OBJS) \
 $(LIBS)
+
+TEST_OBJS=\
+$(TESTS_OBJS)\
+$(OBJS)
+
+TEST_LINK_LIST=\
+$(LDFLAGS) \
+$(TEST_OBJS) \
+$(LIBS)
+
 
 
 #====================================================================#
@@ -95,6 +108,11 @@ $(ARCHDIR)/crtbegin.o $(ARCHDIR)/crtend.o:
 	@echo " * [CC] $@"
 	@$(CC) -MD -c $< -o $@ $(CFLAGS)
 
+$(OUT_NAME)_test: $(TEST_OBJS) $(LINKER_SCRIPT) $(SYSROOT)/lib/libk.a
+	@echo " * [LD] $@"
+	@$(CC) -T $(LINKER_SCRIPT) -o $@ $(CFLAGS) $(TEST_LINK_LIST)
+	@grub-file --is-x86-multiboot $(OUT_NAME)_test
+
 
 #====================================================================#
 # ADDITIONAL COMMANDS
@@ -102,11 +120,12 @@ $(ARCHDIR)/crtbegin.o $(ARCHDIR)/crtend.o:
 
 clean:
 	@echo " * Cleaning kernel build files..."
-	@rm -f $(OUT_NAME)
-	@rm -f $(OBJS) *.o */*.o */*/*.o
-	@rm -f $(OBJS:.o=.d) *.d */*.d */*/*.d
+	@rm -f $(OUT_NAME) $(OUT_NAME)_test
+	@rm -f $(OBJS) $(TEST_OBJS) *.o */*.o */*/*.o
+	@rm -f $(OBJS:.o=.d) $(TEST_OBJS:.o=.d) *.d */*.d */*/*.d
 
 install: install-headers install-kernel
+install-test: install-headers install-test-kernel
 
 install-headers:
 	@echo " * Installing headers..."
@@ -117,6 +136,11 @@ install-kernel: $(OUT_NAME)
 	@echo " * Installing the kernel..."
 	@mkdir -p $(DESTDIR)$(BOOTDIR)
 	@cp $(OUT_NAME) $(DESTDIR)$(BOOTDIR)
+
+install-test-kernel: $(OUT_NAME)_test
+	@echo " * Installing the kernel..."
+	@mkdir -p $(DESTDIR)$(BOOTDIR)
+	@cp $(OUT_NAME)_test $(DESTDIR)$(BOOTDIR)/$(OUT_NAME)
 
 -include $(OBJS:.o=.d)
 

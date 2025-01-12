@@ -31,7 +31,7 @@
 # Note that the order of the projects will be the order in which they
 # will be built, from left to right.
 SYSTEM_HEADER_PROJECTS?=libc kernel
-PROJECTS?=libc kernel
+PROJECTS?=libc kernel kernel/tests
 
 # Program locations
 AR_DIR?=~/opt/cross/bin
@@ -100,7 +100,7 @@ endef
 
 # Builds the selected projects
 all:
-	@for PROJECT in $(PROJECTS); do \
+	@for PROJECT in $(SYSTEM_HEADER_PROJECTS); do \
 	  NAME=$$(echo $$PROJECT | tr '[:lower:]' '[:upper:]'); \
           echo " * INSTALLING HEADERS FOR $$NAME..."; \
 	  env $(foreach var, $(SUB_MAKE_VARIABLES),$(var)="$($(var))") \
@@ -109,7 +109,7 @@ all:
 	done
 	@for PROJECT in $(PROJECTS); do \
 	  NAME=$$(echo $$PROJECT | tr '[:lower:]' '[:upper:]'); \
-          echo " * INSTALLING HEADERS FOR $$NAME..."; \
+          echo " * INSTALLING $$NAME..."; \
 	  env $(foreach var, $(SUB_MAKE_VARIABLES),$(var)="$($(var))") \
             $(MAKE) -C $$PROJECT install; \
 	  $(call print_banner) \
@@ -144,6 +144,7 @@ help:
 	@$(call print_banner)
 	@cat help.txt
 	@$(call print_banner)
+
 #
 # End of Makefile
 #====================================================================#

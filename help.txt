@@ -1,5 +1,5 @@
 * Kernel Build System
-Run make with ont of the following options:
+Run make with one of the following options:
   
   all       used by default, builds the selected projects
   config    generate config.sh to configure the build system

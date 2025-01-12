@@ -24,37 +24,31 @@
  *
  */
 
-#include <kernel/tty.h>
-#include <stdio.h>
 #include <string.h>
-#include <boot/multiboot.h>
-#include <tests.h>
-#include "../arch/i386/vga.h"
+#include <stddef.h>
+#include <stdbool.h>
 
-#if defined(__linux__)
-#error "You are not using a cross-compiler,"
-       "you will most certainly run into trouble"
-#endif
-
-#if !defined(__i386__)
-#error "This kernel needs to be compiled with a ix86-elf compiler"
-#endif
-
-void kernel_main(struct multiboot_info* info)
+char* strstr(const char* haystack, const char* needle)
 {
-    terminal_initialize();
-    terminal_setcolor(VGA_COLOR_GREEN);
-  
-    char* cmdline = multiboot_cmdline(info);
-    if (cmdline != NULL)
-    {
-      if (strstr((char*) info->cmdline, "test\0") != NULL)
-      {
-	tests_main();
-	return;
-      }
-    }
+  size_t len1 = strlen(haystack);
+  size_t len2 = strlen(needle);
+  bool found = true;
+  for (size_t i = 0; i < len1; ++i)
+  {
+      found = true;
 
-    printk("Flags set: %d", info->flags);
-    return;
+      for (size_t j = 0; j < len2; ++j)
+        if (haystack[i+j] != needle[j])
+        {
+	  found = false;
+	  break;
+        }
+
+      if (found)
+      {	
+	return (char*) haystack + i;
+      }
+  }
+
+  return NULL;
 }

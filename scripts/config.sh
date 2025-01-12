@@ -11,7 +11,7 @@
 # Note that the order of the projects will be the order in which they
 # will be built, from left to right.
 export SYSTEM_HEADER_PROJECTS="libc kernel"
-export PROJECTS="libc kernel"
+export PROJECTS="libc kernel kernel/tests"
 
 # Program locations
 AR_DIR=~/opt/cross/bin

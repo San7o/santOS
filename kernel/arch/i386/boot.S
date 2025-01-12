@@ -80,6 +80,13 @@ _start:
 	call _init
 
 	/*
+	Push ebx to the stack so that It can be accessed my kernel main.
+	This register contains the address of the multiboot information
+	structure.
+	*/
+	push %ebx  
+
+	/*
 	Enter the high-level kernel. The ABI requires the stack is 16-byte
 	aligned at the time of the call instruction (which afterwards pushes
 	the return pointer of size 4 bytes). The stack was originally 16-byte

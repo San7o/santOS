@@ -14,8 +14,8 @@
 # - install: combines the previous two                               #
 # - clean: cleans the build files                                    #
 #                                                                    #
-# Note that you should run the `root/config.sh` script before        #
-# building anything.                                                 #
+# Note that you should source the config.sh script before building   #
+# anything.                                                          #
 #                                                                    #
 #====================================================================#
 #====================================================================#

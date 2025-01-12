@@ -24,37 +24,14 @@
  *
  */
 
-#include <kernel/tty.h>
-#include <stdio.h>
-#include <string.h>
 #include <boot/multiboot.h>
-#include <tests.h>
-#include "../arch/i386/vga.h"
+#include <stddef.h>
 
-#if defined(__linux__)
-#error "You are not using a cross-compiler,"
-       "you will most certainly run into trouble"
-#endif
-
-#if !defined(__i386__)
-#error "This kernel needs to be compiled with a ix86-elf compiler"
-#endif
-
-void kernel_main(struct multiboot_info* info)
+char* multiboot_cmdline(struct multiboot_info* info)
 {
-    terminal_initialize();
-    terminal_setcolor(VGA_COLOR_GREEN);
-  
-    char* cmdline = multiboot_cmdline(info);
-    if (cmdline != NULL)
-    {
-      if (strstr((char*) info->cmdline, "test\0") != NULL)
-      {
-	tests_main();
-	return;
-      }
-    }
-
-    printk("Flags set: %d", info->flags);
-    return;
+  if (info->flags & 0x4)
+  {
+    return (char*) info->cmdline;
+  }
+  return NULL;
 }
