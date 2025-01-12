@@ -30,9 +30,12 @@ ARCHDIR=arch/$(ARCH)
 
 # Includes
 # All the objects are defined in those files
-include $(ARCHDIR)/make.config
-include string/make.config
-include stdio/make.config
+SUBPROJECTS_MAKE_CONFIG=\
+$(ARCHDIR)/make.config \
+string/make.config \
+stdio/make.config
+
+include $(SUBPROJECTS_MAKE_CONFIG)
 
 # Output directories
 DESTDIR?=
@@ -41,24 +44,13 @@ EXEC_PREFIX=$(PREFIX)/include
 LIBDIR?=$(EXEC_PREFIX)/lib        # The library will be installed here
 
 # Compiler Flags
-CFLAGS:=\
-$(CFLAGS) \
-$(ARCH_CFLAGS) \
-$(STRING_CFLAGS) \
-$(STDIO_CFLAGS)
-
-LIBK_CFLAGS:=\
-$(LIBK_CFLAGS) \
-$(LIBK_ARCH_CFLAGS) \
-$(LIBK_STRING_CLAGS) \
-$(LIBK_STDIO_CFLAGS)
-
 CFLAGS?=-O2 -g
 LDFLAGS?=
 LIBS?=
 CFLAGS:=$(CFLAGS) -ffreestanding -Wall -Wextra -Wpedantic \
         -Werror -Wconversion
-LIBK_CFLAGS:=$(CFLAGS) $(LIBK_CFLAGS)
+LIBC_CFLAGS:= $(CFLAGS) $(LIBC_CFLAGS)
+LIBK_CFLAGS:= $(CFLAGS) $(LIBK_CFLAGS) 
 
 
 #====================================================================#
@@ -67,23 +59,13 @@ LIBK_CFLAGS:=$(CFLAGS) $(LIBK_CFLAGS)
 
 # Objects for both libk and libc
 COMMON_OBJS:=\
-$(COMMON_ARCH_OBJS) \
-$(COMMON_STRING_OBJS) \
-$(COMMON_STDIO_OBJS)
+$(COMMON_OBJS)
 
 # libk
-LIBK_OBJS:=\
-$(COMMON_OBJS) \
-$(LIBK_ARCH_OBJS) \
-$(LIBK_STRING_OBJS) \
-$(LIBK_STDIO_OBJS) \
+LIBK_OBJS:= $(COMMON_OBJS) $(LIBK_OBJS)
 
 # libc
-LIBC_BJS:=\
-$(COMMON_OBJS) \
-$(LIBC_ARCH_OBJS) \
-$(LIBC_STRING_OBJS) \
-$(LIBC_STDIO_OBJS) \
+LIBC_BJS:= $(COMMON_OBJS) $(LIBC_OBJS)
 
 OBJS:=\
 $(COMMON_OBJS) \
@@ -113,11 +95,11 @@ libk.a: $(LIBK_OBJS)
 
 .c.o:
 	@echo " * [CC] $@"
-	@$(CC) -MD -c $< -o $@ -std=gnu11 $(CFLAGS)
+	@$(CC) -MD -c $< -o $@ -std=gnu11 $(LIBC_CFLAGS)
 
 .c.S:
 	@echo " * [CC] $@"
-	@$(CC) -MD -c $< -o $@ $(CFLAGS)
+	@$(CC) -MD -c $< -o $@ $(LIBC_CFLAGS)
 
 .c.libk.o:
 	@echo " * [CC] $@"

@@ -24,9 +24,58 @@
  *
  */
 
-#ifndef _TESTS_TESTS_H
-#define _TESTS_TESTS_H
+#include <kernel/tty.h>
 
-void tests_main();
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <string.h>
+#include <kernel/tests.h>
 
-#endif  // _TESTS_TESTS_H
+#include "vga.h"
+
+KTEST(tty, terminal_setcolor)
+{
+  // Setup
+  uint8_t terminal_color_old = terminal_color;
+
+  // Test 1
+  terminal_setcolor(VGA_COLOR_BLUE);
+  KASSERT(terminal_color == VGA_COLOR_BLUE);
+
+  // Test 2
+  terminal_setcolor(VGA_COLOR_GREEN);
+  KASSERT(terminal_color == VGA_COLOR_GREEN);
+
+  // Clenup
+  terminal_setcolor(terminal_color_old);
+  KTEST_END;
+}
+
+KTEST(tty, terminal_putentryat)
+{
+  terminal_putentryat('a', VGA_COLOR_BLUE, VGA_WIDTH, VGA_HEIGHT);
+  KASSERT(terminal_buffer[VGA_HEIGHT * VGA_WIDTH + VGA_WIDTH] ==
+	  vga_entry('a', VGA_COLOR_BLUE));
+  KTEST_END;
+}
+
+KTEST(tty, terminal_putchar)
+{
+  KTEST_END;
+}
+
+KTEST(tty, terminal_write)
+{
+  KTEST_END;
+}
+
+KTEST(tty, terminal_writestring)
+{
+  KTEST_END;
+}
+
+KTEST(tty, terminal_initialize)
+{
+  KTEST_END;
+}

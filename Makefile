@@ -33,6 +33,9 @@
 SYSTEM_HEADER_PROJECTS?=libc kernel
 PROJECTS?=libc kernel kernel/tests
 
+# Do tests
+TEST?=True
+
 # Program locations
 AR_DIR?=~/opt/cross/bin
 AS_DIR?=~/opt/cross/bin
@@ -80,7 +83,7 @@ override CC:=$(CC)
 ISO_OUTPUT_NAME?=myos.iso
 
 SUB_MAKE_VARIABLES:=QEMU_DIR GRUB_DIR ARCH SYSROOT MAKE AR AS CC \
-CFLAGS PREFIX EXEC_PREFIX BOOTDIR LIBDIR INCLUDEDIR
+CFLAGS PREFIX EXEC_PREFIX BOOTDIR LIBDIR INCLUDEDIR TEST
 
 
 #====================================================================#

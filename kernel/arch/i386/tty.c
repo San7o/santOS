@@ -33,8 +33,8 @@
 
 #include "vga.h"
 
-static const size_t VGA_WIDTH = 80;
-static const size_t VGA_HEIGHT = 25;
+const size_t VGA_WIDTH = 80;
+const size_t VGA_HEIGHT = 25;
 
 size_t terminal_row;        /* Current row of the terminal */
 size_t terminal_column;     /* Current column of the terminal */
@@ -44,12 +44,14 @@ uint16_t* terminal_buffer;
 void terminal_setcolor(uint8_t color)
 {
     terminal_color = color;
+    return;
 }
 
 void terminal_putentryat(char c, uint8_t color, size_t x, size_t y)
 {
     const size_t index = y * VGA_WIDTH + x;
     terminal_buffer[index] = vga_entry(c, color);
+    return;
 }
 
 void terminal_putchar(char c)
@@ -73,6 +75,7 @@ void terminal_putchar(char c)
             terminal_row = 0;
         }
     }
+    return;
 }
 
 int terminal_write(char* data, size_t size)
@@ -103,4 +106,5 @@ void terminal_initialize(void)
             terminal_putentryat(' ', terminal_color, x, y);
         }
     }
+    return;
 }

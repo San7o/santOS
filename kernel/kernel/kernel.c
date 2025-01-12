@@ -28,8 +28,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <boot/multiboot.h>
-#include <tests.h>
 #include "../arch/i386/vga.h"
+
+#ifdef KERNEL_TEST
+#include <kernel/tests.h>
+#endif
 
 #if defined(__linux__)
 #error "You are not using a cross-compiler,"
@@ -50,7 +53,9 @@ void kernel_main(struct multiboot_info* info)
     {
       if (strstr((char*) info->cmdline, "test\0") != NULL)
       {
+	#ifdef KERNEL_TEST
 	tests_main();
+	#endif
 	return;
       }
     }
