@@ -33,6 +33,8 @@ The build system will take care of the rest.
 The most basic unit test is the following:
 
 ```cpp
+#include <ktest.h>
+
 KTEST(suite_name_here, test_name_here)
 {
   KTEST_END;
@@ -46,6 +48,8 @@ return an integer different that 0.
 Another example:
 
 ```cpp
+#include <ktest.h>
+
 KTEST(tty, terminal_setcolor)
 {
   // Setup

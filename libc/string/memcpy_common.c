@@ -24,16 +24,15 @@
  *
  */
 
-#ifndef _LIBC_STIRNG_H
-#define _LIBC_STIRNG_H
+#include <string.h>
 
-#include <stddef.h>
-
-void* memcpy(void* dest, const void* src, size_t n);
-void* memset(void* s, int c, size_t n);
-void* memmove(void* dest, const void* src, size_t n);
-
-size_t strlen(const char *str);
-char* strstr(const char *haystack, const char* needle);
-
-#endif
+void* memcpy(void* dest, const void* src, size_t n)
+{
+  char* d = (char*) dest;
+  char* s = (char*) src;
+  for (size_t i = 0; i < n; ++i)
+  {
+    d[i] = s[i];
+  }
+  return dest;
+}

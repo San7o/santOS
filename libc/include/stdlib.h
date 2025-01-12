@@ -24,16 +24,21 @@
  *
  */
 
-#ifndef _LIBC_STIRNG_H
-#define _LIBC_STIRNG_H
+#ifndef _LIBC_STDLIB_H
+#define _LIBC_STDLIB_H
 
-#include <stddef.h>
+#if __STDC_HOSTED__ == 0  // Freestanding
 
-void* memcpy(void* dest, const void* src, size_t n);
-void* memset(void* s, int c, size_t n);
-void* memmove(void* dest, const void* src, size_t n);
+void *malloc(size_t size);
+void free(void *_Nullable ptr);
+void *calloc(size_t nmemb, size_t size);
+void *realloc(void *_Nullable ptr, size_t size);
+void *reallocarray(void *_Nullable ptr, size_t nmemb, size_t size);
 
-size_t strlen(const char *str);
-char* strstr(const char *haystack, const char* needle);
+#else // Hosted
+
+
+
+#endif
 
 #endif

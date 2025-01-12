@@ -10,8 +10,8 @@
 # Projects to compile
 # Note that the order of the projects will be the order in which they
 # will be built, from left to right.
-export SYSTEM_HEADER_PROJECTS="libc kernel"
-export PROJECTS="libc kernel"
+export SYSTEM_HEADER_PROJECTS="libktest libc kernel"
+export PROJECTS="libktest libc kernel"
 
 # Do tests
 export TEST=True
@@ -34,7 +34,7 @@ export AS=${AS_DIR}/${HOST}-as
 export CC=${CC_DIR}/${HOST}-gcc
 
 # Compiler Flags
-export CFLAGS='-O2 -g -Wall -Wextra -Werror -Wpedantic' 
+export CFLAGS='-O2 -g -Wall -Wextra -Werror -Wpedantic -Wno-pointer-arith'
 
 # Output directories
 export PREFIX=$(pwd)/sysroot

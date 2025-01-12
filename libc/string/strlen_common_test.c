@@ -24,16 +24,28 @@
  *
  */
 
-#ifndef _LIBC_STIRNG_H
-#define _LIBC_STIRNG_H
-
+#include <ktest.h>
+#include <string.h>
 #include <stddef.h>
 
-void* memcpy(void* dest, const void* src, size_t n);
-void* memset(void* s, int c, size_t n);
-void* memmove(void* dest, const void* src, size_t n);
+KTEST(string, strlen)
+{
+  const char* test1 = "Just a test";
 
-size_t strlen(const char *str);
-char* strstr(const char *haystack, const char* needle);
+  KASSERT(strlen(test1) == 11);
+  KASSERT(-1);
 
-#endif
+  KTEST_END;
+}
+
+extern void *__start_utest_records;
+extern void *__stop_utest_records;
+
+static int (*dummy_reference)(void) = &string_strlen;
+
+void force_utest_records(void) {
+    (void)__start_utest_records;
+    (void)__stop_utest_records;
+    (void) dummy_reference;
+    (void) Record_string_strlen.marker;
+}

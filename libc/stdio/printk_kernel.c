@@ -108,6 +108,8 @@ enum conversion
   _CONV_MAX,
 };
 
+uint64_t __udivmoddi4(uint64_t num, uint64_t den, uint64_t *rem_p);
+
 // Matches the first occurrence of a length modifier, or returns
 // LEN_NONE if the character does not match any modifier.
 enum length_modifier which_length_first(char c)
@@ -482,4 +484,35 @@ int printk(const char *restrict format, ...)
  err:
   va_end(argptr);
   return -1;
+}
+
+// needed when using -Wl,-whole-archive
+uint64_t __udivmoddi4(uint64_t num, uint64_t den, uint64_t *rem_p)
+{
+	uint64_t quot = 0, qbit = 1;
+	if (den == 0) {
+		return 1 / ((unsigned int)den); /* Intentional divide by zero, without
+					       triggering a compiler warning which
+					       would abort the build */
+	}
+
+	/* Left-justify denominator and count shift */
+	while ((int64_t)den >= 0) {
+		den <<= 1;
+		qbit <<= 1;
+	}
+
+	while (qbit) {
+		if (den <= num) {
+			num -= den;
+			quot += qbit;
+		}
+		den >>= 1;
+		qbit >>= 1;
+	}
+
+	if (rem_p)
+		*rem_p = num;
+
+	return quot;
 }

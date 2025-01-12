@@ -4,10 +4,10 @@
 #                                                                    #
 # ------------------------------------------------------------------ #
 #                                                                    #
-# This Makefile is responsible for building the libc implementation. #
+# This Makefile is responsible for building the testing framework.   #
 # This library, compiled separately from the kernel and statically   #
-# liked to it, will provide useful utilities from the glib such as   #
-# string and IO operations.                                          #
+# liked to it, will provide a testing framework for the kernel and   #
+# subprojects.                                                       #
 # Additionally, the following commands are provided:                 #
 # - install-libs: installs the library in $DESTDIR/$LIBDIR           #
 # - install-headers: copies the headers inside $DESTDIR/$INCLUDEDIR  #
@@ -22,21 +22,10 @@
 # VARIABLES
 #
 
-# Do test
-TEST?=True
-
-# Target Architecture
-ARCH?=i386
-
-# Input Directories
-ARCHDIR=arch/$(ARCH)
-
 # Includes
 # All the objects are defined in those files
 SUBPROJECTS_MAKE_CONFIG=\
-$(ARCHDIR)/make.config \
-string/make.config \
-stdio/make.config
+ktest/make.config
 
 include $(SUBPROJECTS_MAKE_CONFIG)
 
@@ -48,38 +37,19 @@ LIBDIR?=$(EXEC_PREFIX)/lib        # The library will be installed here
 
 # Compiler Flags
 CFLAGS?=-O2 -g -Wall -Wextra -Wpedantic \
-        -Werror -Wno-pointer-arith
+        -Werror -Wno-pointer-arith 
 LDFLAGS?=
 LIBS?=
-CFLAGS:=$(CFLAGS) -ffreestanding -nostdlib
-LIBC_CFLAGS:= $(CFLAGS) $(LIBC_CFLAGS)
-LIBK_CFLAGS:= $(CFLAGS) $(LIBK_CFLAGS) 
+KTEST_CFLAGS+=$(CFLAGS) -ffreestanding -nostdlib
 
 
 #====================================================================#
 # OBJECT FILES
 #
 
-# Objects for both libk and libc
-COMMON_OBJS:=\
-$(COMMON_OBJS)
-ifeq ($(TEST),True)
-COMMON_OBJS+=$(KTEST_OBJS)
-endif
+OBJS:=$(KTEST_OBJS)
 
-# libk
-LIBK_OBJS:=$(COMMON_OBJS) $(LIBK_OBJS)
-
-# libc
-LIBC_BJS:=$(COMMON_OBJS) $(LIBC_OBJS)
-
-OBJS:=\
-$(COMMON_OBJS) \
-$(LIBK_OBJS) \
-$(LIBC_OBJS)
-
-LIBK_OBJS:=$(LIBK_OBJS:.o=.libk.o)
-BINARIES=libk.a #libc.a                       # libc not available yet
+BINARIES=libktest.a
 
 
 #====================================================================#
@@ -91,29 +61,17 @@ BINARIES=libk.a #libc.a                       # libc not available yet
 
 all: $(BINARIES)
 
-libc.a: $(LIBC_OBJS)
+libktest.a: $(OBJS)
 	@echo " * [AR] $@"
-	@$(AR) rcs $@ $(LIBC_OBJS)
-
-libk.a: $(LIBK_OBJS)
-	@echo " * [AR] $@"
-	@$(AR) rcs $@ $(LIBK_OBJS)
+	@$(AR) rcs $@ $(OBJS)
 
 .c.o:
 	@echo " * [CC] $@"
-	@$(CC) -MD -c $< -o $@ -std=gnu11 $(LIBC_CFLAGS)
+	@$(CC) -MD -c $< -o $@ -std=gnu11 $(KTEST_CFLAGS)
 
 .c.S:
 	@echo " * [CC] $@"
-	@$(CC) -MD -c $< -o $@ $(LIBC_CFLAGS)
-
-.c.libk.o:
-	@echo " * [CC] $@"
-	@$(CC) -MD -c $< -o $@ -std=gnu11 $(LIBK_CFLAGS)
-
-.S.libk.o:
-	@echo " * [CC] $@"
-	@$(CC) -MD -c $< -o $@ $(LIBK_CFLAGS)
+	@$(CC) -MD -c $< -o $@ $(KTEST_CFLAGS)
 
 
 #====================================================================#
@@ -123,8 +81,8 @@ libk.a: $(LIBK_OBJS)
 clean:
 	@echo " * Cleaning libc build files... $@"
 	@rm -f $(BINARIES) *.a
-	@rm -f $(LIBC_OBJS) $(LIBK_OBJS) *.o */*.o */*/*.o
-	@rm -f $(LIBC_OBJS:.o=.d) $(LIBK_OBJS:.o=.d) *.d */*.d */*/*.d
+	@rm -f $(OBJS) *.o */*.o */*/*.o
+	@rm -f $(OBJS:.o=.d) *.d */*.d */*/*.d
 
 install: install-headers install-libs
 
@@ -138,7 +96,7 @@ install-libs: $(BINARIES)
 	@mkdir -p $(DESTDIR)$(LIBDIR)
 	@cp $(BINARIES) $(DESTDIR)$(LIBDIR)
 
--include $(LIBK_OBJS:.o=.d)
+-include $(OBJS:.o=.d)
 
 #
 # End fof Makefile

@@ -31,7 +31,7 @@
 #include "../arch/i386/vga.h"
 
 #ifdef KERNEL_TEST
-#include <kernel/tests.h>
+#include <ktest.h>
 #endif
 
 #if defined(__linux__)

@@ -30,7 +30,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
-#include <kernel/tests.h>
+#include <ktest.h>
 
 #include "vga.h"
 

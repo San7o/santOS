@@ -24,44 +24,14 @@
  *
  */
 
-/*
-  This file contains the main test runner. The runner is compiled
-  only if tests were enabled in the build systems and is called by
-  the main kernel function if the parameter "test" was provided
-  during boot time.
-*/
+#include <string.h>
 
-#include <kernel/tests.h>
-#include <kernel/tty.h>
-#include <stdio.h>
-#include <stdbool.h>
-#include "../arch/i386/vga.h"
-
-extern Test __start_utest_records[];
-extern Test __stop_utest_records[];
-
-void tests_main()
+void* memset(void* s, int c, size_t n)
 {
-    terminal_initialize();
-    terminal_setcolor(VGA_COLOR_GREEN);
-
-    Test* current = __start_utest_records;
-    while (current < __stop_utest_records)
-    {
-      if (current->marker == 0xDeadBeaf)
-      {
-        printk("Running test: %s\n", current->testName);
-        int ret = current->functionPointer();       // Execute the test.
-	if (ret != 0)
-	{
-          terminal_setcolor(VGA_COLOR_RED);
-          printk("Test Failed: %s\n", current->testName);
-          terminal_setcolor(VGA_COLOR_GREEN);
-	}
-
-      }
-      current++;
-    }
-
-    return;
+  unsigned char* s_char = s;
+  for(size_t i = 0; i < n; ++i)
+  {
+    s_char[i] = (unsigned char) c;
+  }
+  return s;
 }

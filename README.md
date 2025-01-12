@@ -18,3 +18,8 @@ architecture.
 # Compile the kernel
 
 Please read the instruction is [BUILD](./BUILD.md) to continue.
+
+## Tests
+
+The kernel has a test framework, you can find more information in
+[TESTING](./TESTING.md).

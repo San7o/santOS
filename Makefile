@@ -135,13 +135,13 @@ qemu: iso
 
 clean:
 	@echo " * CLEANING PROJECT..."
-	@env $(foreach var, $(SUB_MAKE_VARIABLES),$(var)="$($(var))") \
-          $(MAKE) -C kernel clean
-	@env $(foreach var, $(SUB_MAKE_VARIABLES),$(var)="$($(var))") \
-          $(MAKE) -C libc clean
+	@for PROJECT in $(PROJECTS); do \
+	  env $(foreach var, $(SUB_MAKE_VARIABLES),$(var)="$($(var))") \
+            $(MAKE) -C $$PROJECT clean; \
+	  $(call print_banner) \
+	done
 	@rm $(ISO_OUTPUT_NAME) 2>/dev/null || :
 	@rm -rf $(SYSROOT) 2>/dev/null || :
-	@$(call print_banner)
 
 help:
 	@$(call print_banner)

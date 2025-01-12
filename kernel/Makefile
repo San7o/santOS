@@ -48,12 +48,19 @@ boot/make.config
 include $(SUBPROJECTS_MAKE_CONFIG)
 
 # Compiler Flags
-CFLAGS?=-O2 -g
+CFLAGS?=-O2 -g -Wall -Wextra -Wpedantic \
+        -Werror -Wno-pointer-arith
 LDFLAGS?=
 LIBS?=
-CFLAGS:=$(CFLAGS) -ffreestanding
+CFLAGS:=$(CFLAGS) -ffreestanding -nostdlib
 LDFLAGS:=$(LDFLAGS)
-LIBS:=$(LIBS) -nostdlib -L$(PREFIX)/lib -lk -lgcc    # -lk is the libk
+# The order here is important, we need archives that have test
+# symbols to be linked with --whole-archive
+LIBS:=$(LIBS) -nostdlib -L$(PREFIX)/lib -lgcc \
+                -Wl,--whole-archive -lk -Wl,--no-whole-archive
+ifeq ($(TEST),True)
+LIBS+=-lktest
+endif
 
 CFLAGS:=$(CFLAGS) $(KERNEL_CFLAGS)
 LDFLAGS:=$(LDFLAGS) $(KERNEL_LDFLAGS)
