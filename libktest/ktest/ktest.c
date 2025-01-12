@@ -35,33 +35,33 @@
 #include <kernel/tty.h>
 #include <stdio.h>
 #include <stdbool.h>
-//#include "../arch/i386/vga.h"
 
 extern Test __start_utest_records[];
 extern Test __stop_utest_records[];
 
+#define GREEN 2
+#define RED 4
+
 void tests_main()
 {
-  //terminal_initialize();
- //terminal_setcolor(VGA_COLOR_GREEN);
+  terminal_setcolor(GREEN);
 
-    Test* current = __start_utest_records;
-    while (current < __stop_utest_records)
+  Test* current = __start_utest_records;
+  while (current < __stop_utest_records)
+  {
+    if (current->marker == 0xDeadBeaf)
     {
-      if (current->marker == 0xDeadBeaf)
+      printk("Running test: %s\n", current->testName);
+      int ret = current->functionPointer();       // Execute the test.
+      if (ret != 0)
       {
-        printk("Running test: %s\n", current->testName);
-        int ret = current->functionPointer();       // Execute the test.
-	if (ret != 0)
-	{
-          //terminal_setcolor(VGA_COLOR_RED);
-          printk("Test Failed: %s\n", current->testName);
-          //terminal_setcolor(VGA_COLOR_GREEN);
-	}
-
+        terminal_setcolor(RED);
+        printk("Test Failed: %s\n", current->testName);
+        terminal_setcolor(GREEN);
       }
-      current++;
     }
+    current++;
+  }
 
-    return;
+  return;
 }

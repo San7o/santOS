@@ -68,6 +68,7 @@ typedef struct {
 
 } Test;
 
+/* Run all the tests */
 void tests_main();
 
 #endif  // _TESTS_TESTS_H
