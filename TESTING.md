@@ -23,7 +23,7 @@ the variable `TESTS_OBJS`:
 
 ```
 TESTS_OBJS+=\
-arch/i386/tty_test.obash-5.2$ 
+arch/i386/tty_test.o
 ```
 
 The build system will take care of the rest.
@@ -41,7 +41,7 @@ KTEST(suite_name_here, test_name_here)
 }
 ```
 
-Some macris are available, for example `KASSERT()` to do assertions.
+Some macros are available, for example `KASSERT()` to do assertions.
 You should know that if you want to flag a test as failed, It should
 return an integer different that 0.
 

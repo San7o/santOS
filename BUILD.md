@@ -5,7 +5,6 @@ and is divided into multiple projects.
 So far, the projects include:
 - kernel
 - libc
-- kernel/tests
 
 ## Dependencies
 
