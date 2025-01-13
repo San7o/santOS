@@ -11,8 +11,7 @@
  * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
- all
- * copies or substantial portions of the Software.
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -28,7 +27,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <boot/multiboot.h>
-#include "../arch/i386/vga.h"
 
 #ifdef KERNEL_TEST
 #include <ktest.h>
@@ -43,10 +41,12 @@
 #error "This kernel needs to be compiled with a ix86-elf compiler"
 #endif
 
+#define COLOR_1 2
+       
 void kernel_main(struct multiboot_info* info)
 {
     terminal_initialize();
-    terminal_setcolor(VGA_COLOR_GREEN);
+    terminal_setcolor(COLOR_1);
   
     char* cmdline = multiboot_cmdline(info);
     if (cmdline != NULL)
@@ -60,6 +60,6 @@ void kernel_main(struct multiboot_info* info)
       }
     }
 
-    printk("Flags set: %d", info->flags);
+    printk("Hello World!");
     return;
 }

@@ -23,23 +23,25 @@
  *
  */
 
-#include <ktest.h>
-#include <string.h>
-#include <stddef.h>
+#ifndef _ARCH_UART_H
+#define _ARCH_UART_H
 
-KTEST(string, strlen)
-{
-  const char* test1 = "Just a test";
-  KASSERT(strlen(test1) == 11);
+#include <stddef.h>       // size_t
 
-  const char* test2 = "Another test";
-  KASSERT(strlen(test2) == 12);
+#define UART_COM1 0x3F8
+#define UART_COM2 0x2F8
+#define UART_COM3 0x3E8
+#define UART_COM4 0x2F8
+#define UART_COM5 0x5F8
+#define UART_COM6 0x4F8
+#define UART_COM7 0x5E8
+#define UART_COM8 0x4E8
 
-  const char* test3 = "";
-  KASSERT(strlen(test3) == 0);
+int init_serial();
+int serial_received();
+char read_serial();
+int is_transmit_empty();
+void write_serial(char a);
+void write_string_serial(const char* s, size_t size);
 
-  const char* test4 = "07123e1f482356c415f684407a3b8723e10b2cbbc0b8fcd6282c49d37c9c1abc";
-  KASSERT(strlen(test4) == 64);
-
-  KTEST_END;
-}
+#endif  // _ARCH_UART_H

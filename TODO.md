@@ -1,3 +1,4 @@
 # TODO
 
-- output to serial port
+- rework ktest to use UART
+- terminal colors architecture agonstic

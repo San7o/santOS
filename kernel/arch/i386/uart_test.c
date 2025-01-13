@@ -24,22 +24,27 @@
  */
 
 #include <ktest.h>
+#include <arch/uart.h>
+#include <sys/io.h>
 #include <string.h>
-#include <stddef.h>
 
-KTEST(string, strlen)
+KTEST(uart, loopback_serial)
 {
-  const char* test1 = "Just a test";
-  KASSERT(strlen(test1) == 11);
+  init_serial();
 
-  const char* test2 = "Another test";
-  KASSERT(strlen(test2) == 12);
+  write_serial('a');
+  KASSERT(is_transmit_empty());
 
-  const char* test3 = "";
-  KASSERT(strlen(test3) == 0);
+  KTEST_END;
+}
 
-  const char* test4 = "07123e1f482356c415f684407a3b8723e10b2cbbc0b8fcd6282c49d37c9c1abc";
-  KASSERT(strlen(test4) == 64);
+KTEST(uart, loopback_string_serial)
+{
+  init_serial();
+
+  const char* message = "Hello World!";
+  write_string_serial(message, strlen(message));
+  KASSERT(is_transmit_empty());
 
   KTEST_END;
 }

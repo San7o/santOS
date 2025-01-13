@@ -30,8 +30,8 @@
 # Projects to compile
 # Note that the order of the projects will be the order in which they
 # will be built, from left to right.
-SYSTEM_HEADER_PROJECTS?=libc kernel
-PROJECTS?=libc kernel kernel/tests
+SYSTEM_HEADER_PROJECTS?=libktest libc kernel
+PROJECTS?=libktest libc kernel
 
 # Do tests
 TEST?=True
@@ -129,9 +129,13 @@ iso:
 	@$(GRUB_DIR)/grub-mkrescue -o $(ISO_OUTPUT_NAME) sysroot
 	@$(call print_banner)
 
+# Some notes on qemu usage:
+# "-serial stdio -serial tcp::4444,server" will send UART 0 to your
+# terminal and connect UART 1 to a TCP server on port 4444 which you
+# can then connect to with netcat or similar utility. (Peter Maydell)
 qemu: iso
 	@echo " * LAUNCHING QEMU..."
-	@$(QEMU_DIR)/qemu-system-i386 -cdrom $(ISO_OUTPUT_NAME)
+	@$(QEMU_DIR)/qemu-system-i386 -cdrom $(ISO_OUTPUT_NAME) -serial stdio
 
 clean:
 	@echo " * CLEANING PROJECT..."

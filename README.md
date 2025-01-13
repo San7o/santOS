@@ -9,7 +9,7 @@ architecture.
 - [x] printk
 - [x] access multiboot info
 - [x] testing infrastructure
-- [ ] output to a serial port for debugging purposes
+- [x] output to a serial port for debugging purposes
 - [ ] having a working interrupt/exception handling system that can dump
       the contents of the registers
 - [ ] plan the memory map

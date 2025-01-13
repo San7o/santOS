@@ -79,7 +79,7 @@ libktest.a: $(OBJS)
 #
 
 clean:
-	@echo " * Cleaning libc build files... $@"
+	@echo " * Cleaning libktest build files... $@"
 	@rm -f $(BINARIES) *.a
 	@rm -f $(OBJS) *.o */*.o */*/*.o
 	@rm -f $(OBJS:.o=.d) *.d */*.d */*/*.d

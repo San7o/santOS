@@ -132,11 +132,12 @@ install-headers:
 	@echo " * Installing Headers... $@"
 	@mkdir -p $(DESTDIR)$(INCLUDEDIR)
 	@cp -R --preserve=timestamps include/. $(DESTDIR)$(INCLUDEDIR)/.
+	@cp -R --preserve=timestamps arch/$(ARCH)/include/. $(DESTDIR)$(INCLUDEDIR)/.
 
 install-libs: $(BINARIES)
 	@echo " * Installing libs... $@"
 	@mkdir -p $(DESTDIR)$(LIBDIR)
-	@cp $(BINARIES) $(DESTDIR)$(LIBDIR)
+	@cp -R $(BINARIES) $(DESTDIR)$(LIBDIR)
 
 -include $(LIBK_OBJS:.o=.d)
 

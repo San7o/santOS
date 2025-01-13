@@ -26,4 +26,5 @@ imported and used my the make located in the `libc` directory.
 
 All the code that is architecture dependent should live in `arch`.
 The build system will compile only the architecture selected when
-building.
+building. Note that the headers in `arch/$(ARCH)/include` will be
+available when building.
