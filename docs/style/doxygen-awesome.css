@@ -35,7 +35,7 @@ html {
 
     /* page base colors */
     --page-background-color: #ffffff;
-    --page-foreground-color: #2f4153;
+    --page-foreground-color: #2f4153; 
     --page-secondary-foreground-color: #6f7e8e;
 
     /* color for all separators on the website: hr, borders, ... */
@@ -197,13 +197,13 @@ html {
 
         --menu-selected-background: rgba(0,0,0,.4);
 
-        --page-background-color: #1C1D1F;
+        --page-background-color: #000000; /* #1C1D1F */
         --page-foreground-color: #d2dbde;
         --page-secondary-foreground-color: #859399;
-        --separator-color: #38393b;
-        --side-nav-background: #252628;
+        --separator-color: #6c6c6c; /* old: #38393b */
+        --side-nav-background: #000000; /* old: #252628*/
 
-        --code-background: #2a2c2f;
+        --code-background: #0f0f0f; /* old: #2a2c2f */
 
         --tablehead-background: #2a2c2f;
     
@@ -229,7 +229,7 @@ html {
         --invariant-color-dark: #76ce96;
         --invariant-color-darker: #cceed5;
 
-        --fragment-background: #282c34;
+        --fragment-background: #0f0f0f; /* old: #282c34 */ 
         --fragment-foreground: #dbe4eb;
         --fragment-keyword: #cc99cd;
         --fragment-keywordtype: #ab99cd;
@@ -258,13 +258,13 @@ html.dark-mode {
 
     --menu-selected-background: rgba(0,0,0,.4);
 
-    --page-background-color: #1C1D1F;
+    --page-background-color: #000000; /* old: #1C1D1F */ 
     --page-foreground-color: #d2dbde;
     --page-secondary-foreground-color: #859399;
-    --separator-color: #38393b;
-    --side-nav-background: #252628;
+    --separator-color: #6c6c6c; /* old: #38393b */
+    --side-nav-background: #000000; /* old: #252628 */ 
 
-    --code-background: #2a2c2f;
+    --code-background: #0f0f0f; /* old: #2a2c2f */
 
     --tablehead-background: #2a2c2f;
 
@@ -290,7 +290,7 @@ html.dark-mode {
     --invariant-color-dark: #76ce96;
     --invariant-color-darker: #cceed5;
 
-    --fragment-background: #282c34;
+    --fragment-background: #0f0f0f; /* old: #282c34 */ 
     --fragment-foreground: #dbe4eb;
     --fragment-keyword: #cc99cd;
     --fragment-keywordtype: #ab99cd;

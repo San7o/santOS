@@ -6,4 +6,5 @@ Run make with one of the following options:
   iso       generate an iso after a kernel is built
   qemu      run qemu emulator to test the kernel
   clean     clean the build files
+  docs      generate html documentation
   help      show this message

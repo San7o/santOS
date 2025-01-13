@@ -99,7 +99,7 @@ endef
 # COMMANDS
 #
 
-.PHONY: all iso qemu clean help
+.PHONY: all iso qemu clean docs help
 
 # Builds the selected projects
 all:
@@ -146,6 +146,9 @@ clean:
 	done
 	@rm $(ISO_OUTPUT_NAME) 2>/dev/null || :
 	@rm -rf $(SYSROOT) 2>/dev/null || :
+
+docs:
+	@doxygen doxygen.conf
 
 help:
 	@$(call print_banner)

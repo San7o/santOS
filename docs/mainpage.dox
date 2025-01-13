@@ -1,5 +1,6 @@
 /*!
  * \mainpage santOS
- * TODO
+ * This project aims to build an operating system supporting the i386
+ * architecture.
  */
 
