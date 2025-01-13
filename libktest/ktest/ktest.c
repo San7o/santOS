@@ -23,15 +23,9 @@
  *
  */
 
-/*
-  This file contains the main test runner. The runner is compiled
-  only if tests were enabled in the build systems and It is called by
-  the main kernel function if the parameter "test" was provided
-  during boot time.
-*/
-
 #include <ktest.h>
 #include <arch/uart.h>
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
@@ -41,7 +35,9 @@ extern Test __stop_utest_records[];
 
 void tests_main()
 {
-  printk("Running tests...\n");
+  const char* start_message = "Running tests...\n";
+  printk("%s", start_message);
+  uart_write_string(start_message, strlen(start_message));
 
   uart_init();
 
@@ -51,6 +47,7 @@ void tests_main()
     if (current->marker == 0xDeadBeaf)
     {
       const char* test_message = "[test] ";
+      printk("%s%s\n", test_message, current->testName);
       uart_write_string(test_message, strlen(test_message));
       uart_write_string(current->testName, strlen(current->testName));
       uart_write('\n');
@@ -59,6 +56,7 @@ void tests_main()
       if (ret != 0)
       {
 	const char* fail_message = "Test Failed: ";
+	printk("%s%s\n", fail_message, current->testName);
         uart_write_string(fail_message, strlen(fail_message));
 	uart_write_string(current->testName, strlen(current->testName));
 	uart_write('\n');

@@ -1,3 +1,3 @@
 # TODO
 
-- terminal colors architecture agonstic
+- documentation with style

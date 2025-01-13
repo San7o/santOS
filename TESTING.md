@@ -73,6 +73,10 @@ KTEST(tty, terminal_setcolor)
 
 If thests are enabled in the build system, the final kernel will accept
 the flag `test` during boot. This will run all the tests and stop.
+The output will be written to both teminal display and in COM1 serial
+port, on qemu you can use the flag `-serial stdio` to receive the
+output in the terminal you are launghing qemu from, or you could
+redirect the output over the network with `-serial tcp::4444,server`.
 
 A grub entry is already provided to test the kernel:
 

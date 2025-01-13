@@ -41,12 +41,12 @@
 #error "This kernel needs to be compiled with a ix86-elf compiler"
 #endif
 
-#define COLOR_1 2
+#define GREEN 2  // vga terminal
 
 void kernel_main(struct multiboot_info* info)
 {
     terminal_initialize();
-    terminal_setcolor(COLOR_1);
+    terminal_setcolor(GREEN);
   
     char* cmdline = multiboot_cmdline(info);
     if (cmdline != NULL)

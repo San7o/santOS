@@ -23,10 +23,22 @@
  *
  */
 
-#ifndef _TESTS_TESTS_H
-#define _TESTS_TESTS_H
+/* =================================================================*\
+ *                                                                   *
+ * libktest is the testing framework of the kernel. Test cases are   *
+ * registered with the macro KTEST which will be run by test main.   *
+ * The runner is compiled only if tests were enabled in the build    *
+ * systems and It is called by the main kernel function if the       *
+ * parameter "test" was provided during boot time.                   *
+ *                                                                   *
+\* =================================================================*/
 
-#include <stdint.h>     // uint32_t
+#ifndef _KTEST_KTEST_H
+#define _KTEST_KTEST_H
+
+#include <stdint.h>     // for uint32_t
+
+// Assertions
 
 #define KASSERT(...)          \
   do                          \
@@ -38,6 +50,7 @@
   }                           \
   while(0)
 
+// Register a test case, It should end with KTEST_END
 // Thanks Sam P.
 #define KTEST(suiteName, uTtestName)                           \
     static int suiteName##_##uTtestName(void);                 \
@@ -53,9 +66,11 @@
     };                                                         \
     static int suiteName##_##uTtestName(void)
 
+// Add this at the end of a test case
 #define KTEST_END \
     return 0
-    
+
+// Each test will create this struct in the section .utest_records
 typedef struct {
     uint32_t marker;                   // To validate the Test
     const char* testSuite;
@@ -67,7 +82,7 @@ typedef struct {
 
 } Test;
 
-/* Run all the tests */
+// Run all the tests
 void tests_main();
 
 #endif  // _TESTS_TESTS_H
