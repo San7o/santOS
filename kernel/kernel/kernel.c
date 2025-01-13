@@ -42,7 +42,7 @@
 #endif
 
 #define COLOR_1 2
-       
+
 void kernel_main(struct multiboot_info* info)
 {
     terminal_initialize();
@@ -55,6 +55,8 @@ void kernel_main(struct multiboot_info* info)
       {
 	#ifdef KERNEL_TEST
 	tests_main();
+	#else
+        printk("Error: the kernel was not compiled with tests\n");
 	#endif
 	return;
       }

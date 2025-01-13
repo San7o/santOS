@@ -31,37 +31,45 @@
 */
 
 #include <ktest.h>
-#include <kernel/tty.h>
+#include <arch/uart.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 
 extern Test __start_utest_records[];
 extern Test __stop_utest_records[];
 
-#define GREEN 2
-#define RED 4
-
 void tests_main()
 {
-  terminal_setcolor(GREEN);
+  printk("Running tests...\n");
+
+  uart_init();
 
   Test* current = __start_utest_records;
-  printk("Number of tests: %d\n", __stop_utest_records - __start_utest_records);
   while (current < __stop_utest_records)
   {
     if (current->marker == 0xDeadBeaf)
     {
-      printk("Running test: %s\n", current->testName);
+      const char* test_message = "[test] ";
+      uart_write_string(test_message, strlen(test_message));
+      uart_write_string(current->testName, strlen(current->testName));
+      uart_write('\n');
+
       int ret = current->functionPointer();       // Execute the test.
       if (ret != 0)
       {
-        terminal_setcolor(RED);
-        printk("Test Failed: %s\n", current->testName);
-        terminal_setcolor(GREEN);
+	const char* fail_message = "Test Failed: ";
+        uart_write_string(fail_message, strlen(fail_message));
+	uart_write_string(current->testName, strlen(current->testName));
+	uart_write('\n');
       }
     }
     current++;
   }
+
+  const char* done_message = "Done\n";
+  uart_write_string(done_message, strlen(done_message));
+  printk("Done\n");
 
   return;
 }

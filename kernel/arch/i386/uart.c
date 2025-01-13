@@ -28,7 +28,7 @@
 
 #include <stddef.h>      // size_t
 
-int init_serial()
+int uart_init()
 {
    outb(0x00, UART_COM1 + 1);    // Disable all interrupts
    outb(0x80, UART_COM1 + 3);    // Enable DLAB (set baud rate divisor)
@@ -53,35 +53,35 @@ int init_serial()
    return 0;
 }
 
-int serial_received()
+int uart_received()
 {
    return inb(UART_COM1 + 5) & 1;
 }
 
-char read_serial()
+char uart_serial()
 {
-   while (serial_received() == 0);
+   while (uart_received() == 0);
 
    return inb(UART_COM1);
 }
 
-int is_transmit_empty()
+int uart_is_transmit_empty()
 {
    return inb(UART_COM1 + 5) & 0x20;
 }
 
-void write_serial(char a)
+void uart_write(char a)
 {
-   while (is_transmit_empty() == 0);
+   while (uart_is_transmit_empty() == 0);
    outb(a, UART_COM1);
    return;
 }
 
-void write_string_serial(const char* s, size_t size)
+void uart_write_string(const char* s, size_t size)
 {
   for (size_t i = 0; i < size; ++i)
   {
-    write_serial(s[i]);
+    uart_write(s[i]);
   }
   return;
 }

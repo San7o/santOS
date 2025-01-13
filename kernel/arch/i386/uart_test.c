@@ -28,23 +28,23 @@
 #include <sys/io.h>
 #include <string.h>
 
-KTEST(uart, loopback_serial)
+KTEST(uart, loopback)
 {
-  init_serial();
+  uart_init();
 
-  write_serial('a');
-  KASSERT(is_transmit_empty());
+  uart_write('a');
+  KASSERT(uart_is_transmit_empty());
 
   KTEST_END;
 }
 
-KTEST(uart, loopback_string_serial)
+KTEST(uart, loopback_string)
 {
-  init_serial();
+  uart_init();
 
   const char* message = "Hello World!";
-  write_string_serial(message, strlen(message));
-  KASSERT(is_transmit_empty());
+  uart_write_string(message, strlen(message));
+  KASSERT(uart_is_transmit_empty());
 
   KTEST_END;
 }

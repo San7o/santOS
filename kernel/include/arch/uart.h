@@ -37,11 +37,11 @@
 #define UART_COM7 0x5E8
 #define UART_COM8 0x4E8
 
-int init_serial();
-int serial_received();
-char read_serial();
-int is_transmit_empty();
-void write_serial(char a);
-void write_string_serial(const char* s, size_t size);
+int uart_init();
+int uart_received();
+char uart_read();
+int uart_is_transmit_empty();
+void uart_write(char a);
+void uart_write_string(const char* s, size_t size);
 
 #endif  // _ARCH_UART_H
