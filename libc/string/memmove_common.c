@@ -28,9 +28,22 @@
 
 void* memmove(void* dest, const void* src, size_t n)
 {
-  /* TODO, requires allocation */
-  (void) dest;
-  (void) src;
-  (void) n;
+  char* d = (char*) dest;
+  char* s = (char*) src;
+  if (dest == src) return dest;
+  if (dest < src)
+  {
+    for (size_t i = 0; i < n; ++i)
+    {
+      d[i] = s[i];
+    }
+  }
+  else
+  {
+    for(int i = n-1; i >= 0; --i)
+    {
+      d[i] = s[i];
+    }
+  }
   return dest;
 }

@@ -31,21 +31,16 @@
 KTEST(string, strlen)
 {
   const char* test1 = "Just a test";
-
   KASSERT(strlen(test1) == 11);
-  KASSERT(-1);
+
+  const char* test2 = "Another test";
+  KASSERT(strlen(test2) == 12);
+
+  const char* test3 = "";
+  KASSERT(strlen(test3) == 0);
+
+  const char* test4 = "07123e1f482356c415f684407a3b8723e10b2cbbc0b8fcd6282c49d37c9c1abc";
+  KASSERT(strlen(test4) == 64);
 
   KTEST_END;
-}
-
-extern void *__start_utest_records;
-extern void *__stop_utest_records;
-
-static int (*dummy_reference)(void) = &string_strlen;
-
-void force_utest_records(void) {
-    (void)__start_utest_records;
-    (void)__stop_utest_records;
-    (void) dummy_reference;
-    (void) Record_string_strlen.marker;
 }

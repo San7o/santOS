@@ -24,45 +24,19 @@
  *
  */
 
-/*
-  This file contains the main test runner. The runner is compiled
-  only if tests were enabled in the build systems and It is called by
-  the main kernel function if the parameter "test" was provided
-  during boot time.
-*/
-
 #include <ktest.h>
-#include <kernel/tty.h>
-#include <stdio.h>
-#include <stdbool.h>
+#include <string.h>
+#include <stddef.h>
 
-extern Test __start_utest_records[];
-extern Test __stop_utest_records[];
-
-#define GREEN 2
-#define RED 4
-
-void tests_main()
+KTEST(string, memmove)
 {
-  terminal_setcolor(GREEN);
-
-  Test* current = __start_utest_records;
-  printk("Number of tests: %d\n", __stop_utest_records - __start_utest_records);
-  while (current < __stop_utest_records)
+  const char* buff1 = "12345\0";
+  char buff2[5];
+  memmove(buff2, buff1, 5);
+  for (size_t i = 0; i < 5; ++i)
   {
-    if (current->marker == 0xDeadBeaf)
-    {
-      printk("Running test: %s\n", current->testName);
-      int ret = current->functionPointer();       // Execute the test.
-      if (ret != 0)
-      {
-        terminal_setcolor(RED);
-        printk("Test Failed: %s\n", current->testName);
-        terminal_setcolor(GREEN);
-      }
-    }
-    current++;
+    KASSERT(buff1[i] == buff2[i]);
   }
 
-  return;
+  KTEST_END;
 }
