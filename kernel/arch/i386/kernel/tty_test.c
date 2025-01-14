@@ -31,7 +31,7 @@
 #include <string.h>
 #include <ktest.h>
 
-#include "vga.h"
+#include <arch/vga.h>
 
 KTEST(tty, terminal_setcolor)
 {

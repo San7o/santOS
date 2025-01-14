@@ -24,9 +24,11 @@
  */
 
 #include <kernel/tty.h>
+#include <boot/multiboot.h>
+#include <arch/vga.h>
+
 #include <stdio.h>
 #include <string.h>
-#include <boot/multiboot.h>
 
 #ifdef KERNEL_TEST
 #include <ktest.h>
@@ -41,12 +43,10 @@
 #error "This kernel needs to be compiled with a ix86-elf compiler"
 #endif
 
-#define GREEN 2  // vga terminal
-
 void kernel_main(struct multiboot_info* info)
 {
     terminal_initialize();
-    terminal_setcolor(GREEN);
+    terminal_setcolor(VGA_COLOR_WHITE);
   
     char* cmdline = multiboot_cmdline(info);
     if (cmdline != NULL)

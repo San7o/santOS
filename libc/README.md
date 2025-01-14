@@ -9,16 +9,17 @@ versions:
 - `libc`: host library which uses system calls and implements the
   standard library.
 
-## Conventions
+## Common Conventions
 
 This directory contains a separate directory for each header file (such
 as stdio, stirng...) and each function is implemented on Its own file
 unless It really does not make sense.
 
 The name of `.c` files can end in either:
-- `_kernel.c`: for libk sources
-- `_user.c`: for libc sources
-- `_common.c`: for both
+- `*_kernel.c`: for libk sources
+- `*_user.c`: for libc sources
+- `*_common.c`: for both
+- `*_test.c`: test version of the previous ones
 
 Each directory has Its own `make.config` and each source file will be
 added to this in the corresponding field. The `make.config` will be
@@ -28,3 +29,6 @@ All the code that is architecture dependent should live in `arch`.
 The build system will compile only the architecture selected when
 building. Note that the headers in `arch/$(ARCH)/include` will be
 available when building.
+Usually, there is a different directory for each architecture
+dependent counterpart of a normal directory. For example, there might
+exists the directory `stdio` and the `arch/$(ARCH)/stdio/` equivalent.

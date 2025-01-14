@@ -35,6 +35,8 @@ extern Test __stop_utest_records[];
 
 void tests_main()
 {
+  // TODO: When sprintf will be implemented, ise that and create
+  // a function to print in both vga and uart
   const char* start_message = "Running tests...\n";
   printk("%s", start_message);
   uart_write_string(start_message, strlen(start_message));

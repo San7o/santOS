@@ -132,6 +132,7 @@ install-headers:
 	@echo " * Installing headers..."
 	@mkdir -p $(DESTDIR)$(INCLUDEDIR)
 	@cp -R --preserve=timestamps include/. $(DESTDIR)$(INCLUDEDIR)/.
+	@cp -R --preserve=timestamps arch/$(ARCH)/include/. $(DESTDIR)$(INCLUDEDIR)/.
 
 install-kernel: $(OUT_NAME)
 	@echo " * Installing the kernel..."
