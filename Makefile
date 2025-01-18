@@ -27,42 +27,36 @@
 # random places in your system.
 #
 
-# Projects to compile
 # Note that the order of the projects will be the order in which they
 # will be built, from left to right.
-SYSTEM_HEADER_PROJECTS?=libktest libc kernel
-PROJECTS?=libktest libc kernel
+SYSTEM_HEADER_PROJECTS?=libktest libc kernel # headers to install
+PROJECTS?=libktest libc kernel # projects to compile
 
-# Do tests
-TEST?=True
+TEST?=True # Do tests
 
 # Program locations
-AR_DIR?=~/opt/cross/bin
-AS_DIR?=~/opt/cross/bin
-CC_DIR?=~/opt/cross/bin
-QEMU_DIR?=/usr/bin
-GRUB_DIR?=~/opt/bin
+AR_DIR?=~/opt/cross/bin # ar executable path
+AS_DIR?=~/opt/cross/bin # as executable path
+CC_DIR?=~/opt/cross/bin # cc executable path
+QEMU_DIR?=/usr/bin # qemu executable path
+GRUB_DIR?=~/opt/bin # grub executable path
 
-# Target
-HOST?=i686-elf
-# The target architecture
-ARCH?=i386
+HOST?=i686-elf # host
+ARCH?=i386 # target architecture
 
-# Configure the cross-compiler to use the desired system root.
-SYSROOT?=$(shell pwd)/sysroot
+SYSROOT?=$(shell pwd)/sysroot # system root
 
-# Compiler Flags
-CFLAGS?=-O2 -g -Wall -Wextra -Werror -Wpedantic
+CFLAGS?=-O2 -g -Wall -Wextra -Werror -Wpedantic # compiler flags
 
 # Output directories
-PREFIX?=$(shell pwd)/sysroot
+PREFIX?=$(shell pwd)/sysroot # outpu prefix
 EXEC_PREFIX?=$(PREFIX)
 BOOTDIR?=$(PREFIX)/boot
 LIBDIR?=$(EXEC_PREFIX)/lib
 INCLUDEDIR?=$(PREFIX)/include
 
 # Compilers
-MAKE?=make
+MAKE?=make # make program
 # Override the default one
 ifeq ($(AR),ar)
 AR=$(AR_DIR)/$(HOST)-ar
@@ -80,7 +74,7 @@ override AS:=$(AS)
 override CC:=$(CC)
 
 # Output names
-ISO_OUTPUT_NAME?=myos.iso
+ISO_OUTPUT_NAME?=myos.iso # iso output name
 
 SUB_MAKE_VARIABLES:=QEMU_DIR GRUB_DIR ARCH SYSROOT MAKE AR AS CC \
 CFLAGS PREFIX EXEC_PREFIX BOOTDIR LIBDIR INCLUDEDIR TEST
@@ -102,7 +96,7 @@ endef
 .PHONY: all iso qemu clean docs help
 
 # Builds the selected projects
-all:
+all: # default, builds the selected projects
 	@for PROJECT in $(SYSTEM_HEADER_PROJECTS); do \
 	  NAME=$$(echo $$PROJECT | tr '[:lower:]' '[:upper:]'); \
           echo " * INSTALLING HEADERS FOR $$NAME..."; \
@@ -118,14 +112,15 @@ all:
 	  $(call print_banner) \
 	done
 
-config:
+config: # generate config.sh used to configure the build system
 	@cp scripts/config.sh config.sh
 	@echo "config.sh created in $(shell pwd)"
 
+iso: # generate an iso after the kernel is built
 iso:
 	@echo " * CREATING ISO..."
 	@mkdir $(SYSROOT)/boot/grub || :
-	@cp boot/grub.cfg $(SYSROOT)/boot/grub/
+	@cp boot/grub.cfg $(SYSROOT)/boot/grub/ || :
 	@$(GRUB_DIR)/grub-mkrescue -o $(ISO_OUTPUT_NAME) sysroot
 	@$(call print_banner)
 
@@ -133,11 +128,16 @@ iso:
 # "-serial stdio -serial tcp::4444,server" will send UART 0 to your
 # terminal and connect UART 1 to a TCP server on port 4444 which you
 # can then connect to with netcat or similar utility. (Peter Maydell)
+qemu: # run qemu emulator to test the kernel
 qemu: iso
 	@echo " * LAUNCHING QEMU..."
-	@$(QEMU_DIR)/qemu-system-i386 -cdrom $(ISO_OUTPUT_NAME) -serial stdio
+	@$(QEMU_DIR)/qemu-system-i386 \
+               -cdrom $(ISO_OUTPUT_NAME) \
+               -serial mon:stdio \
+               -d int,exec,pcall,cpu_reset \
+               -D /tmp/qemu.log
 
-clean:
+clean: # clean the build files
 	@echo " * CLEANING PROJECT..."
 	@for PROJECT in $(PROJECTS); do \
 	  env $(foreach var, $(SUB_MAKE_VARIABLES),$(var)="$($(var))") \
@@ -147,12 +147,19 @@ clean:
 	@rm $(ISO_OUTPUT_NAME) 2>/dev/null || :
 	@rm -rf $(SYSROOT) 2>/dev/null || :
 
-docs:
+docs: # generate html documentation
 	@doxygen doxygen.conf
 
-help:
+# thanks to Julio Merino
+help: # show help message
 	@$(call print_banner)
-	@cat help.txt
+	@echo -e "* Kernel Build System\n"
+	@echo -e "make variables:\n"
+	@sed -e 's/^\([^ 	]\+\)[ 	]*?=[^#]\+#\(.*\)$$/\1 \2/p;d' Makefile | column -t -l 2 | sort
+	@echo
+	@echo "make targets:"
+	@echo
+	@sed -e's/^\([^: 	]\+\):.*#\(.*\)$$/\1 \2/p;d' Makefile | column -t -l 2 | sort
 	@$(call print_banner)
 
 #
